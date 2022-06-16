@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable
+            name="movie"
+            type="com.basemosama.movies.data.Movie" />
+        <import type="com.basemosama.movies.data.ImageType"/>
+    </data>
+<androidx.cardview.widget.CardView
+    android:layout_width="100dp"
+    android:layout_height="150dp"
+    app:cardCornerRadius="15dp"
+    app:cardElevation="10dp"
+    android:layout_margin="10dp"
+    >
+
+    <ImageView android:id="@+id/movie_image"
+        android:layout_width="100dp"
+        android:layout_height="150dp"
+        tools:src="@drawable/madmax"
+        app:image="@{movie.posterPath}"
+        app:type="@{ImageType.POSTER}"
+        android:contentDescription="Movie Poster" />
+
+
+
+
+</androidx.cardview.widget.CardView>
+</layout>
