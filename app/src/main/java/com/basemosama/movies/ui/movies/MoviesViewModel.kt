@@ -13,8 +13,7 @@ import kotlinx.coroutines.launch
 
 class MoviesViewModel(application: Application) : AndroidViewModel(application) {
 
-    private var _movies: MutableStateFlow<DataState<List<Movie>>> =m
-        MutableStateFlow(DataState.Loading)
+    private var _movies: MutableStateFlow<DataState<List<Movie>>> = MutableStateFlow(DataState.Loading)
     val movies: StateFlow<DataState<List<Movie>>> = _movies
     lateinit var repository: MovieRepository
 
