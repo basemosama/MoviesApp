@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 
 class MoviesViewModel(application: Application) : AndroidViewModel(application) {
 
-    private var _movies: MutableStateFlow<DataState<List<Movie>>> =
+    private var _movies: MutableStateFlow<DataState<List<Movie>>> =m
         MutableStateFlow(DataState.Loading)
     val movies: StateFlow<DataState<List<Movie>>> = _movies
     lateinit var repository: MovieRepository
@@ -33,25 +33,25 @@ class MoviesViewModel(application: Application) : AndroidViewModel(application) 
                 } else {
                     _movies.value = DataState.Error("No Movies Found")
                 }
-
-
-                /*
-                    repository.getMovies().collect {
-                         if(it is DataState.Success){
-                             val results = it.data.results
-                             if(results != null){
-                                 _movies.emit(DataState.Success(results))
-                                 repository.insertMoviesToDB(results)
-                             }else{
-                                 _movies.emit(DataState.Error("Couldn't Get Data "))
-                             }
-                         }else if(it is DataState.Loading){
-                             _movies.emit(DataState.Loading)
-                         }else{
-                             _movies.emit(DataState.Error((it as DataState.Error).message))
-                         }
-                     }*/
             }
+
+//
+//                    repository.getMovies().collect {
+//                         if(it is DataState.Success){
+//                             val results = it.data.results
+//                             if(results != null){
+//                                 _movies.emit(DataState.Success(results))
+//                                 repository.insertMoviesToDB(results)
+//                             }else{
+//                                 _movies.emit(DataState.Error("Couldn't Get Data "))
+//                             }
+//                         }else if(it is DataState.Loading){
+//                             _movies.emit(DataState.Loading)
+//                         }else{
+//                             _movies.emit(DataState.Error((it as DataState.Error).message))
+//                         }
+//                     }
+
         }
 
     }

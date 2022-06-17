@@ -4,9 +4,13 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import com.basemosama.movies.data.Movie
+import com.basemosama.movies.database.typeconverters.DateTypeConverter
+import com.basemosama.movies.database.typeconverters.LongArrayTypeConverter
 
 @Database(entities = [Movie::class], version = 1, exportSchema = false)
+@TypeConverters(DateTypeConverter::class,LongArrayTypeConverter::class)
 abstract class AppDatabase: RoomDatabase() {
 
     companion object{
@@ -20,6 +24,7 @@ abstract class AppDatabase: RoomDatabase() {
                     context,
                     AppDatabase::class.java,
                     DATABASE_NAME)
+                    .fallbackToDestructiveMigration()
                     .build()
                 INSTANCE = instance
 
