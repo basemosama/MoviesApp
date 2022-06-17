@@ -1,4 +1,4 @@
-package com.basemosama.movies.data
+package com.basemosama.movies.data.network
 
 import com.google.gson.annotations.SerializedName
 

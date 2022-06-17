@@ -62,7 +62,6 @@ dependencies {
     //room
     def roomVersion = "2.5.0-alpha02"
     implementation("androidx.room:room-runtime:$roomVersion")
-    // To use Kotlin Symbolic Processing (KSP)
    kapt("androidx.room:room-compiler:$roomVersion")
     // optional - Kotlin Extensions and Coroutines support for Room
     implementation("androidx.room:room-ktx:$roomVersion")
