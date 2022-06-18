@@ -1,24 +1,24 @@
 package com.basemosama.movies.ui.movies
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.basemosama.movies.data.Movie
 import com.basemosama.movies.data.MovieRepository
 import com.basemosama.movies.utils.DataState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class MoviesViewModel(application: Application) : AndroidViewModel(application) {
+@HiltViewModel
+class MoviesViewModel @Inject constructor(private val repository: MovieRepository) : ViewModel() {
 
     private var _movies: MutableStateFlow<DataState<List<Movie>>> = MutableStateFlow(DataState.Loading)
     val movies: StateFlow<DataState<List<Movie>>> = _movies
-    lateinit var repository: MovieRepository
 
     init {
-        repository = MovieRepository(application.applicationContext)
         getMovies()
     }
 

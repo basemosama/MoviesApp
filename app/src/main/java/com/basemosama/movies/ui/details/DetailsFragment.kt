@@ -8,7 +8,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.basemosama.movies.databinding.FragmentDetailsBinding
 import com.basemosama.movies.ui.movies.MoviesViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class DetailsFragment : Fragment() {
     private lateinit var detailsBinding: FragmentDetailsBinding
     private val viewModel: MoviesViewModel by activityViewModels()

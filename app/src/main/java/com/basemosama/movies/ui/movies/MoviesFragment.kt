@@ -18,7 +18,9 @@ import com.basemosama.movies.adapters.MovieClickListener
 import com.basemosama.movies.data.Movie
 import com.basemosama.movies.databinding.FragmentMoviesBinding
 import com.basemosama.movies.utils.DataState
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MoviesFragment : Fragment(), MovieClickListener {
     private lateinit var moviesBinding: FragmentMoviesBinding
     private lateinit var recyclerView: RecyclerView
