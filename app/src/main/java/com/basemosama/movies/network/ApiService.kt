@@ -8,13 +8,12 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface ApiService {
-//
-//    @GET("movie/top_rated")
-//    suspend fun getTopRatedMovies(
-//        @Query("api_key") apikey: String,
-//        @Query("language") language: String,
-//        @Query("page") page: Long
-//    ): Response<PagedResponse<Movie>>
+
+    @GET("movie/top_rated")
+    suspend fun getTopRatedMovies2(
+        @Query("language") language: String,
+        @Query("page") page: Long
+    ): PagedResponse<Movie>
 
     @GET("movie/top_rated")
      fun getTopRatedMovies(
