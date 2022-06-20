@@ -8,6 +8,9 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,6 +20,8 @@ import com.basemosama.movies.data.Movie
 import com.basemosama.movies.databinding.FragmentMoviesBinding
 import com.basemosama.movies.utils.Resource
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
 
 @AndroidEntryPoint
 class MoviesFragment : Fragment(), MovieClickListener {
@@ -56,7 +61,9 @@ class MoviesFragment : Fragment(), MovieClickListener {
             moviesBinding.animationView.isVisible =
                 state is Resource.Loading && state.data.isNullOrEmpty()
 
-            adapter.submitList(state.data)
+            if(state !is Resource.Loading) {
+                adapter.submitList(state.data)
+            }
 
             if (state is Resource.Error) {
                 Toast.makeText(context, state.message, Toast.LENGTH_LONG).show()
@@ -65,50 +72,6 @@ class MoviesFragment : Fragment(), MovieClickListener {
         }
     }
 
-    // i can collect state flow here but it require more handling for lifecycle
-    // as u should use viewLifecycleOwner. repeatLifecycle to handle it
-    //
-//
-//        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-//            repeatOnLifecycle(Lifecycle.State.STARTED) {
-//
-//
-//                viewModel.movies2.collectLatest { state ->
-//                    when (state) {
-//                        is Resource.Loading -> moviesBinding.animationView.visibility =
-//                            View.VISIBLE
-//                        is Resource.Success -> {
-//                            moviesBinding.animationView.visibility = View.GONE
-//                            adapter.submitList(state.data)
-//                        }
-//                        is Resource.Error -> {
-//                            moviesBinding.animationView.visibility = View.GONE
-//                            state.data.let {
-//                                adapter.submitList(it)
-//                            }
-//                            Toast.makeText(context, state.message, Toast.LENGTH_SHORT).show()
-//                        }
-//                    }
-//                }
-
-//
-//                viewModel.movies.collect() { state ->
-//                    when (state) {
-//                        is DataState.Loading -> moviesBinding.animationView.visibility =
-//                            View.VISIBLE
-//                        is DataState.Success -> {
-//                            moviesBinding.animationView.visibility = View.GONE
-//                            adapter.submitList(state.data)
-//                        }
-//                        is DataState.Error -> {
-//                            moviesBinding.animationView.visibility = View.GONE
-//                            Toast.makeText(context, state.message, Toast.LENGTH_SHORT).show()
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//
 
     override fun onMovieClickListener(movie: Movie?) {
         Toast.makeText(context, movie?.title, Toast.LENGTH_SHORT).show()
@@ -117,6 +80,14 @@ class MoviesFragment : Fragment(), MovieClickListener {
         movie?.id?.let {
             val action = MoviesFragmentDirections.actionMoviesFragmentToDetailsFragment2(movie.id)
             findNavController().navigate(action)
+        }
+    }
+}
+
+fun <T> Fragment.repeatOnLifeCycle(flow: Flow<T>, collector: suspend (T) -> Unit) {
+    viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+        viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            flow.collectLatest(collector)
         }
     }
 }

@@ -1,6 +1,6 @@
-package com.basemosama.movies.network.utils
+package com.basemosama.movies.network.utils.flowAdapter
 
-import com.basemosama.movies.utils.DataState
+import com.basemosama.movies.utils.Resource
 import kotlinx.coroutines.flow.Flow
 import retrofit2.CallAdapter
 import retrofit2.Response
@@ -31,7 +31,7 @@ class FlowCallAdapterFactory private constructor() : CallAdapter.Factory() {
                     )
                 )
             }
-            DataState::class.java -> {
+            Resource::class.java -> {
                 check(responseType is ParameterizedType) { "Response must be parameterized as DataState<Foo> or DataState<out Foo>" }
                 StateBodyCallAdapter<Any>(
                     getParameterUpperBound(

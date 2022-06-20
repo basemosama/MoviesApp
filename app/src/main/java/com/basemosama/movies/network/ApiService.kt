@@ -2,12 +2,16 @@ package com.basemosama.movies.network
 
 import com.basemosama.movies.data.Movie
 import com.basemosama.movies.data.network.PagedResponse
-import com.basemosama.movies.utils.DataState
-import kotlinx.coroutines.flow.Flow
+import com.basemosama.movies.network.utils.NetworkResult
 import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface ApiService {
+
+    companion object{
+         const val BASE_URL: String = "https://api.themoviedb.org/3/"
+    }
+
 
     @GET("movie/top_rated")
     suspend fun getTopRatedMovies2(
@@ -16,9 +20,11 @@ interface ApiService {
     ): PagedResponse<Movie>
 
     @GET("movie/top_rated")
-     fun getTopRatedMovies(
+    suspend fun getTopRatedMovies(
         @Query("language") language: String,
         @Query("page") page: Long
-    ): Flow<DataState<PagedResponse<Movie>>>
+    ): NetworkResult<PagedResponse<Movie>>
+
+
 
 }

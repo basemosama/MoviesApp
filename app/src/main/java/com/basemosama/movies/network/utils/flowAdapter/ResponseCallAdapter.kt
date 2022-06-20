@@ -1,6 +1,7 @@
-package com.basemosama.movies.network.utils
+package com.basemosama.movies.network.utils.flowAdapter
 
-import com.basemosama.movies.utils.DataState
+import com.basemosama.movies.network.utils.NetworkResult
+import com.basemosama.movies.utils.Resource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -50,9 +51,10 @@ class BodyCallAdapter<T>(private val responseType: Type) : CallAdapter<T, Flow<T
 
                         override fun onResponse(call: Call<T>, response: Response<T>) {
                             try {
-                                when (val result: ApiResponseHandler<T> = ApiResponseHandler.create(response)) {
-                                    is ApiSuccessResponse -> continuation.resume(result.data)
-                                    is ApiErrorResponse -> continuation.resumeWithException(
+                                when (val result: NetworkResult<T> =
+                                    NetworkResult.create(response)) {
+                                    is NetworkResult.Success -> continuation.resume(result.data)
+                                    is NetworkResult.Error -> continuation.resumeWithException(
                                         Exception(result.errorMessage)
                                     )
                                 }
@@ -71,40 +73,40 @@ class BodyCallAdapter<T>(private val responseType: Type) : CallAdapter<T, Flow<T
     override fun responseType() = responseType
 }
 
-class StateBodyCallAdapter<T>(private val responseType: Type) : CallAdapter<T, Flow<DataState<T>>> {
-    override fun adapt(call: Call<T>): Flow<DataState<T>> {
+class StateBodyCallAdapter<T>(private val responseType: Type) : CallAdapter<T, Flow<Resource<T>>> {
+    override fun adapt(call: Call<T>): Flow<Resource<T>> {
         return flow {
 
-            emit(DataState.Loading)
+            emit(Resource.Loading(null))
 
             emit(
                 suspendCancellableCoroutine { continuation ->
                     call.enqueue(object : Callback<T> {
                         override fun onFailure(call: Call<T>, t: Throwable) {
-                            val result: ApiErrorResponse<T> = ApiResponseHandler.create(t)
-                            continuation.resume(DataState.Error(result.errorMessage))
+                            val result: NetworkResult.Error<T> = NetworkResult.create(t)
+                            continuation.resume(Resource.Error(result.errorMessage,null))
                         }
 
                         override fun onResponse(call: Call<T>, response: Response<T>) {
                             try {
-                                when (val result: ApiResponseHandler<T> = ApiResponseHandler.create(response)) {
+                                when (val result: NetworkResult<T> =
+                                    NetworkResult.create(response)) {
 
-                                    is ApiSuccessResponse -> continuation.resume(
-                                        DataState.Success(
+                                    is NetworkResult.Success -> continuation.resume(
+                                        Resource.Success(
                                             result.data
                                         )
                                     )
-                                    is ApiErrorResponse -> continuation.resume(
-                                        DataState.Error(result.errorMessage)
+                                    is NetworkResult.Error -> continuation.resume(
+                                        Resource.Error(result.errorMessage,null)
                                     )
                                 }
 
                             } catch (e: Exception) {
                                 continuation.resume(
-                                    DataState.Error(
-                                        e.localizedMessage ?: "Unknown Error"
+                                    Resource.Error(
+                                        e.localizedMessage ?: "Unknown Error",null)
                                     )
-                                )
                             }
                         }
                     })

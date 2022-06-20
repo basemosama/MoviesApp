@@ -2,7 +2,7 @@ package com.basemosama.movies.di
 
 import com.basemosama.movies.BuildConfig
 import com.basemosama.movies.network.ApiService
-import com.basemosama.movies.network.utils.FlowCallAdapterFactory
+import com.basemosama.movies.network.utils.errorAdapter.NetworkResultCallAdapterFactory
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
@@ -21,7 +21,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
-    private const val baseUrl: String = "https://api.themoviedb.org/3/"
 
     @Singleton
     @Provides
@@ -76,8 +75,8 @@ object NetworkModule {
     @Provides
     fun provideRetrofitBuilder(gson: Gson, client: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-            .baseUrl(baseUrl)
-            .addCallAdapterFactory(FlowCallAdapterFactory.create())
+            .baseUrl(ApiService.BASE_URL)
+            .addCallAdapterFactory(NetworkResultCallAdapterFactory.create())
             .addConverterFactory(GsonConverterFactory.create(gson))
             .client(client)
             .build()
