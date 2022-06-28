@@ -27,6 +27,7 @@ class DetailsFragment : Fragment() {
      }
 
 
+
     private fun getCurrentMovie(){
         viewModel.currentMovie.observe(viewLifecycleOwner){
             detailsBinding.movie = it

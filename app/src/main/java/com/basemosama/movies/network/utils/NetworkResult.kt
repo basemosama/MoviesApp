@@ -17,6 +17,8 @@
 package com.basemosama.movies.network.utils
 
 import retrofit2.Response
+import timber.log.Timber
+import java.io.IOException
 
 /**
  * Common class used by API responses.
@@ -30,22 +32,33 @@ sealed class NetworkResult<T> {
 
 
     companion object {
+        private const val DEFAULT_ERROR = "Sorry, Something went wrong"
         fun <T> create(error: Throwable): Error<T> {
-            return Error(error.message ?: "unknown error")
+            var  errorMessage = error.message ?: DEFAULT_ERROR
+            if(error is IOException){
+                errorMessage = "Please check your internet connection and try again "
+            }
+            Timber.d("NetworkError : $errorMessage")
+
+            return Error(errorMessage)
         }
 
         fun <T> create(response: Response<T>): NetworkResult<T> {
             return if (response.isSuccessful) {
                 val body = response.body()
                 if (body == null || response.code() == 204) {
-                    Error(  "Empty Response error")
+                    Timber.d("NetworkError : Empty String")
+
+                    Error(  DEFAULT_ERROR)
                 } else {
+                    Timber.d("NetworkError : Success")
                     Success( body)
+
                 }
             } else {
-                val msg = response.errorBody()?.string()
-                val errorMsg = if (msg.isNullOrEmpty())  response.message() else  msg
-                Error(errorMsg ?: "unknown error")
+                val msg = if(!response.message().isNullOrEmpty()) response.message() else DEFAULT_ERROR
+                Timber.d("NetworkError response: $msg")
+                Error(msg)
             }
         }
     }

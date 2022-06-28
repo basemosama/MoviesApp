@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Movies</string>
+    <string name="sort_movies">Sort Movies</string>
+    <string name="search_movies">Search Movies</string>
+    <string name="order_movies_by_title_asc">Order movies By title ASC</string>
+    <string name="order_movies_by_title_desc">Order movies By title DESC</string>
+    <string name="default_order">Default order</string>
 </resources>

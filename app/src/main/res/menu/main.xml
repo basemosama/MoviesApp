@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:id="@+id/action_sort"
+        android:title="@string/sort_movies"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_sort"
+        android:orderInCategory="100"
+        >
+
+        <menu>
+            <item android:id="@+id/action_sort_asc"
+                android:title="@string/order_movies_by_title_asc" />
+
+            <item android:id="@+id/action_sort_desc"
+                android:title="@string/order_movies_by_title_desc" />
+
+            <item android:id="@+id/action_sort_default"
+                android:title="@string/default_order" />
+
+        </menu>
+
+
+    </item>
+
+    <item android:id="@+id/action_search"
+        android:title="@string/search_movies"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_search"
+        app:actionViewClass="android.widget.SearchView"
+        android:orderInCategory="200"
+        />
+</menu>

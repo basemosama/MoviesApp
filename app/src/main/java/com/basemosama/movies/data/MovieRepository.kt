@@ -9,6 +9,7 @@ import com.basemosama.movies.utils.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import javax.inject.Inject
 
 class MovieRepository @Inject constructor(
@@ -18,11 +19,11 @@ class MovieRepository @Inject constructor(
 
 
     private suspend fun getMoviesFromApi(): NetworkResult<PagedResponse<Movie>> {
-        return apiClient.getTopRatedMovies("en-US", -2)
+        return apiClient.getTopRatedMovies("en-US", 1)
     }
 
     fun getMoviesFromDB(): Flow<List<Movie>> =
-        movieDao.getAllMovies()
+        movieDao.getMovies("")
 
 
     private suspend fun insertMoviesToDB(movies: List<Movie>) {
@@ -32,9 +33,12 @@ class MovieRepository @Inject constructor(
     }
 
 
-    fun getMovies2(): Flow<Resource<List<Movie>>> =
+    fun getMovies(sortType: SortType, search: String): Flow<Resource<List<Movie>>> =
         networkBoundResource(
-            query = { movieDao.getAllMovies() },
+            query = {
+                Timber.d("Sorting in Repository has changed to $sortType and search to $search")
+                movieDao.getSortedMovies(sortType,search)
+            },
             fetch = { getMoviesFromApi() },
             saveFetchResult = { response ->
                 run {
@@ -44,8 +48,8 @@ class MovieRepository @Inject constructor(
                 }
             }, shouldFetch = {
                 //should implement your caching strategy
-             //   it.isEmpty()
-                true
+                it.isEmpty()
+
             }
 
         )

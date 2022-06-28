@@ -26,7 +26,7 @@ data class Movie(
     var tagline: String?,
     @SerializedName("vote_average")
     var vote_average: Double?,
-   @SerializedName("genre_ids") var genreIds: LongArray?,
+    @SerializedName("genre_ids") var genreIds: LongArray?,
     @SerializedName("release_date")
     var releaseDate: Date?
 

@@ -25,13 +25,11 @@ class MainActivity : AppCompatActivity() {
 
 
 
-
     private fun setupNavigation(){
         appBarConfiguration = AppBarConfiguration.Builder(setOf(R.id.moviesFragment,R.id.detailsFragment)).build()
 
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
-        //NavigationUI.setupActionBarWithNavController(this,navController,appBarConfiguration)
     }
 
     override fun onSupportNavigateUp(): Boolean {

@@ -18,7 +18,6 @@ fun setImage(view: ImageView, path: String?,type: ImageType) {
         val url = BASE_IMAGE_URL+ width + path
         Glide.with(view).load(url).centerCrop().into(view)
     }
-
 }
 
 @BindingAdapter("image", "type", requireAll = true)
