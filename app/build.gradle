@@ -20,8 +20,7 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
 
-        // Please ensure you have a valid API KEY for themoviedb.org↵
-        //to use this app
+        // Please ensure you have a valid API KEY for themoviedb.org to use this app
         // A valid key will need to be entered
         buildConfigField("String", "API_KEY", API_KEY)
 
@@ -94,8 +93,10 @@ dependencies {
     //lottie
     def lottieVersion = "3.4.0"
     implementation "com.airbnb.android:lottie:$lottieVersion"
-
+    //Timber
     implementation 'com.jakewharton.timber:timber:5.0.1'
+    //DataStore
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
 
 
     testImplementation 'junit:junit:4.13.2'

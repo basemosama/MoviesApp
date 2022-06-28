@@ -7,19 +7,19 @@ import androidx.lifecycle.viewModelScope
 import com.basemosama.movies.data.Movie
 import com.basemosama.movies.data.MovieRepository
 import com.basemosama.movies.data.SortType
+import com.basemosama.movies.utils.PreferenceManger
 import com.basemosama.movies.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MoviesViewModel @Inject constructor(private val repository: MovieRepository) : ViewModel() {
-
-    // val movies3: LiveData<Resource<List<Movie>>> = repository.getMovies("").asLiveData()
-    val sortFlow = MutableStateFlow(SortType.DEFAULT)
+class MoviesViewModel @Inject constructor(private val repository: MovieRepository
+,private val preferenceManger: PreferenceManger) : ViewModel() {
 
     private val searchFlow = MutableStateFlow("")
-
+    private val sortFlow = preferenceManger.preferencesFlow
 
 
     val movies: StateFlow<Resource<List<Movie>>> = sortFlow.combine(searchFlow) { sort, search ->
@@ -32,33 +32,15 @@ class MoviesViewModel @Inject constructor(private val repository: MovieRepositor
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), Resource.Loading())
 
 
-//    init {
-//        searchFlow.mapLatest { search ->
-//            Timber.d("Sorting $search")
-//            movies= repository.getMovies(SortType.DEFAULT, search).stateIn(
-//                viewModelScope,
-//                SharingStarted.WhileSubscribed(), Resource.Loading()
-//            )
-//
-//        }.launchIn(viewModelScope)
-//    }
-
-
-//
-//    val movies3: StateFlow<Resource<List<Movie>>> = combine(sortFlow, searchFlow) { sort, search ->
-//        repository.getMovies(sort, search)
-//            .stateIn(
-//                viewModelScope,
-//                SharingStarted.WhileSubscribed(5000),
-//                Resource.Loading(null)
-//            )
-//
-//
-//    }
-
 
     fun setSearchQuery(query: String) {
         searchFlow.value = query
+    }
+
+     fun saveSortType(type:SortType){
+        viewModelScope.launch {
+            preferenceManger.saveSortType(type)
+        }
     }
 
     private val _currentMovie = MutableLiveData<Movie?>()

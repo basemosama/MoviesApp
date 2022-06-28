@@ -89,15 +89,15 @@ class MoviesFragment : Fragment(), MovieClickListener {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_sort_asc -> {
-                viewModel.sortFlow.value = SortType.ASC
+                viewModel.saveSortType(SortType.ASC)
                 true
             }
             R.id.action_sort_desc -> {
-                viewModel.sortFlow.value = SortType.DESC
+                viewModel.saveSortType(SortType.DESC)
                 true
             }
             R.id.action_sort_default -> {
-                viewModel.sortFlow.value = SortType.DEFAULT
+                viewModel.saveSortType(SortType.DEFAULT)
                 true
             }
             else -> super.onOptionsItemSelected(item)
