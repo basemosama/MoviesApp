@@ -22,7 +22,7 @@ interface ApiService {
     @GET("movie/top_rated")
     suspend fun getTopRatedMovies(
         @Query("language") language: String,
-        @Query("page") page: Long
+        @Query("page") page: Int
     ): NetworkResult<PagedResponse<Movie>>
 
 

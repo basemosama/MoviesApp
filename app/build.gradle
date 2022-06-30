@@ -66,13 +66,14 @@ dependencies {
     implementation("androidx.room:room-ktx:$roomVersion")
     // optional - Paging 3 Integration
     implementation("androidx.room:room-paging:2.5.0-alpha02")
+
     //retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:4.9.1'
 
     //lifecycle
-    def lifecycle_version = "2.5.0-rc01"
+    def lifecycle_version = "2.5.0-rc02"
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version")
@@ -84,11 +85,14 @@ dependencies {
     kapt("com.google.dagger:hilt-android-compiler:$hilt_version")
 
     //coroutines
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.1")
 
     //glide
     implementation 'com.github.bumptech.glide:glide:4.13.0'
     kapt 'com.github.bumptech.glide:compiler:4.13.0'
+    //paging
+    def paging_version = "3.1.1"
+    implementation("androidx.paging:paging-runtime:$paging_version")
 
     //lottie
     def lottieVersion = "3.4.0"

@@ -19,8 +19,8 @@ class MovieRepository @Inject constructor(
 ) {
 
 
-    private suspend fun getMoviesFromApi(): NetworkResult<PagedResponse<Movie>> {
-        return apiClient.getTopRatedMovies("en-US", 1)
+     suspend fun getMoviesFromApi(page:Int = 1): NetworkResult<PagedResponse<Movie>> {
+        return apiClient.getTopRatedMovies("en-US", page)
     }
 
     fun getMoviesFromDB(): Flow<List<Movie>> =

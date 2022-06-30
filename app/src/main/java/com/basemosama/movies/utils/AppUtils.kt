@@ -8,14 +8,14 @@ import androidx.lifecycle.repeatOnLifecycle
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 
-inline fun SearchView.onQueryTextChanged(crossinline listenr:(String) -> Unit){
+inline fun SearchView.onQueryTextChanged(crossinline listener:(String) -> Unit){
     this.setOnQueryTextListener(object :SearchView.OnQueryTextListener{
         override fun onQueryTextSubmit(query: String?): Boolean {
             return true
         }
 
         override fun onQueryTextChange(query: String?): Boolean {
-            listenr(query.orEmpty())
+            listener(query.orEmpty())
             return true
         }
 

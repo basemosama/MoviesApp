@@ -8,14 +8,15 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.GridLayoutManager
 import com.basemosama.movies.R
 import com.basemosama.movies.adapters.MovieAdapter
 import com.basemosama.movies.adapters.MovieClickListener
+import com.basemosama.movies.adapters.PagingMovieAdapter
 import com.basemosama.movies.data.Movie
 import com.basemosama.movies.data.SortType
 import com.basemosama.movies.databinding.FragmentMoviesBinding
-import com.basemosama.movies.utils.Resource
 import com.basemosama.movies.utils.onQueryTextChanged
 import com.basemosama.movies.utils.repeatOnLifeCycle
 import dagger.hilt.android.AndroidEntryPoint
@@ -24,6 +25,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class MoviesFragment : Fragment(), MovieClickListener {
     private lateinit var moviesBinding: FragmentMoviesBinding
     private lateinit var movieAdapter: MovieAdapter
+    private lateinit var  pagingMovieAdapter: PagingMovieAdapter
     private val viewModel: MoviesViewModel by activityViewModels()
 
     override fun onCreateView(
@@ -40,11 +42,10 @@ class MoviesFragment : Fragment(), MovieClickListener {
     }
 
     private fun setupUI() {
-        movieAdapter = MovieAdapter(this)
-
+        pagingMovieAdapter = PagingMovieAdapter(this)
         moviesBinding.moviesRv.apply {
             layoutManager = GridLayoutManager(context, 3)
-            adapter = movieAdapter
+            adapter = pagingMovieAdapter
         }
 
         setHasOptionsMenu(true)
@@ -53,21 +54,18 @@ class MoviesFragment : Fragment(), MovieClickListener {
 
     private fun getMovies() {
 
+        repeatOnLifeCycle(pagingMovieAdapter.loadStateFlow){loadStates ->
+            val state = loadStates.refresh
+            moviesBinding.loadingView.isVisible = state is LoadState.Loading
 
-        repeatOnLifeCycle(viewModel.movies) { state ->
-
-            moviesBinding.animationView.isVisible =
-                state is Resource.Loading && state.data.isNullOrEmpty()
-
-            if (state !is Resource.Loading) {
-                movieAdapter.submitList(state.data){
-                    moviesBinding.moviesRv.scrollToPosition(0)
-                }
+            if (state is LoadState.Error) {
+                val errorMsg = state.error.message
+                Toast.makeText(context, errorMsg, Toast.LENGTH_LONG).show()
             }
+        }
 
-            if (state is Resource.Error) {
-                Toast.makeText(context, state.message, Toast.LENGTH_LONG).show()
-            }
+        repeatOnLifeCycle(viewModel.movies2) { data ->
+            pagingMovieAdapter.submitData(data)
         }
 
     }
