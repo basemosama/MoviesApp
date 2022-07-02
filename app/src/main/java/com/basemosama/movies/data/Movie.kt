@@ -1,5 +1,6 @@
 package com.basemosama.movies.data
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
@@ -9,7 +10,7 @@ import java.util.*
 @Entity(tableName = "movies")
 data class Movie(
     @PrimaryKey
-    var id: Long,
+    var id:Long,
     var title: String,
     @SerializedName("original_title")
     var originalTitle: String?,
@@ -25,10 +26,18 @@ data class Movie(
     var status: String?,
     var tagline: String?,
     @SerializedName("vote_average")
-    var vote_average: Double?,
+    var voteAverage: Double?,
+    @SerializedName("vote_count")
+    var voteCount: Long?,
+    var popularity: Double?,
     @SerializedName("genre_ids") var genreIds: LongArray?,
     @SerializedName("release_date")
-    var releaseDate: Date?
+    var releaseDate: Date?,
+    @ColumnInfo(name = "created_at", defaultValue = "CURRENT_TIMESTAMP")
+    var createdAt:Date?,
+    @ColumnInfo(name = "updated_at", defaultValue = "CURRENT_TIMESTAMP")
+    var updatedAt:Date?
+
 
 )
 

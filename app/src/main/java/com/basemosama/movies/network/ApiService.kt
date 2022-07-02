@@ -27,4 +27,11 @@ interface ApiService {
 
 
 
+    @GET("discover/movie")
+    suspend fun getPopularMovies(
+        @Query("language") language: String,
+        @Query("page") page: Int,
+        @Query("sort_by") sortBy: String,
+    ): NetworkResult<PagedResponse<Movie>>
+
 }

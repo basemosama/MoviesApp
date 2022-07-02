@@ -9,20 +9,23 @@
         <import type="com.basemosama.movies.data.ImageType"/>
     </data>
 <androidx.cardview.widget.CardView
-    android:layout_width="100dp"
-    android:layout_height="150dp"
+    android:layout_width="160dp"
+    android:layout_height="250dp"
     app:cardCornerRadius="15dp"
     app:cardElevation="10dp"
     android:layout_margin="10dp"
+    android:foregroundGravity="center"
     >
 
     <ImageView android:id="@+id/movie_image"
-        android:layout_width="100dp"
-        android:layout_height="150dp"
+        android:layout_width="160dp"
+        android:layout_height="250dp"
         tools:src="@drawable/madmax"
         app:image="@{movie.posterPath}"
         app:type="@{ImageType.POSTER}"
-        android:contentDescription="Movie Poster" />
+        android:contentDescription="Movie Poster"
+        android:layout_gravity="center"
+        />
 
 
 

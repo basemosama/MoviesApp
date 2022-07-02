@@ -1,9 +1,7 @@
 package com.basemosama.movies.database
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.paging.PagingSource
+import androidx.room.*
 import com.basemosama.movies.data.Movie
 import com.basemosama.movies.data.SortType
 import kotlinx.coroutines.flow.Flow
@@ -15,12 +13,19 @@ interface MovieDao {
         when(sortType){
             SortType.ASC ->  getSortedMoviesASC(searchQuery)
             SortType.DESC -> getSortedMoviesDESC(searchQuery)
-            SortType.DEFAULT -> getMovies(searchQuery)
+            SortType.DEFAULT -> getMovies()
         }
 
-    @Query("SELECT * FROM movies WHERE title LIKE '%' || :search || '%'" +
-            " OR originalTitle LIKE :search")
-    fun getMovies(search:String): Flow<List<Movie>>
+    fun getPagedMovies(sortType: SortType, searchQuery: String) : PagingSource<Int,Movie> =
+        when(sortType){
+            SortType.ASC ->  getPagedSortedMoviesASC(searchQuery)
+            SortType.DESC -> getPagedSortedMoviesDESC(searchQuery)
+            SortType.DEFAULT -> getDefaultPagedMovies(searchQuery.ifEmpty { "DEFAULT_QUERY" })
+        }
+
+
+    @Query("SELECT * FROM movies ORDER BY popularity DESC")
+    fun getMovies(): Flow<List<Movie>>
 
     @Query("SELECT * FROM movies WHERE title LIKE '%' || :search || '%'" +
             " OR originalTitle LIKE :search" +
@@ -31,6 +36,28 @@ interface MovieDao {
             " OR originalTitle LIKE :search" +
             " ORDER BY title DESC")
     fun getSortedMoviesDESC(search:String): Flow<List<Movie>>
+
+
+
+
+
+    @Transaction
+    @Query("SELECT * FROM movies" +
+            " INNER JOIN movie_remote_key_table on movies.id = movie_remote_key_table.movieId" +
+            " WHERE searchQuery = :search" +
+            " ORDER BY movie_remote_key_table.id")
+    fun getDefaultPagedMovies(search:String): PagingSource<Int,Movie>
+
+    @Query("SELECT * FROM movies WHERE title LIKE '%' || :search || '%'" +
+            " OR originalTitle LIKE :search" +
+            " ORDER BY title ASC")
+    fun getPagedSortedMoviesASC(search:String): PagingSource<Int,Movie>
+
+    @Query("SELECT * FROM movies WHERE title LIKE '%' || :search || '%'" +
+            " OR originalTitle LIKE :search" +
+            " ORDER BY title DESC")
+    fun getPagedSortedMoviesDESC(search:String): PagingSource<Int,Movie>
+
 
 
     @Query("SELECT * FROM movies WHERE id = :id")

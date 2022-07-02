@@ -11,7 +11,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.GridLayoutManager
 import com.basemosama.movies.R
-import com.basemosama.movies.adapters.MovieAdapter
 import com.basemosama.movies.adapters.MovieClickListener
 import com.basemosama.movies.adapters.PagingMovieAdapter
 import com.basemosama.movies.data.Movie
@@ -24,8 +23,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MoviesFragment : Fragment(), MovieClickListener {
     private lateinit var moviesBinding: FragmentMoviesBinding
-    private lateinit var movieAdapter: MovieAdapter
-    private lateinit var  pagingMovieAdapter: PagingMovieAdapter
+    private lateinit var pagingMovieAdapter: PagingMovieAdapter
     private val viewModel: MoviesViewModel by activityViewModels()
 
     override fun onCreateView(
@@ -44,7 +42,7 @@ class MoviesFragment : Fragment(), MovieClickListener {
     private fun setupUI() {
         pagingMovieAdapter = PagingMovieAdapter(this)
         moviesBinding.moviesRv.apply {
-            layoutManager = GridLayoutManager(context, 3)
+            layoutManager = GridLayoutManager(context, 2)
             adapter = pagingMovieAdapter
         }
 
@@ -54,7 +52,7 @@ class MoviesFragment : Fragment(), MovieClickListener {
 
     private fun getMovies() {
 
-        repeatOnLifeCycle(pagingMovieAdapter.loadStateFlow){loadStates ->
+        repeatOnLifeCycle(pagingMovieAdapter.loadStateFlow) { loadStates ->
             val state = loadStates.refresh
             moviesBinding.loadingView.isVisible = state is LoadState.Loading
 
@@ -62,21 +60,31 @@ class MoviesFragment : Fragment(), MovieClickListener {
                 val errorMsg = state.error.message
                 Toast.makeText(context, errorMsg, Toast.LENGTH_LONG).show()
             }
+
         }
 
         repeatOnLifeCycle(viewModel.movies2) { data ->
+          ///  Timber.d("REMOTE SOURCE SUBMITTING DATA:")
+
             pagingMovieAdapter.submitData(data)
         }
 
+//        //scroll to top after updating the adapter
+//        repeatOnLifeCycle(pagingMovieAdapter.loadStateFlow
+//            .distinctUntilChangedBy { it.refresh }
+//            .filter { it.refresh is LoadState.NotLoading }
+//        ) {
+//            moviesBinding.moviesRv.scrollToPosition(0)
+//        }
     }
 
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.main,menu)
+        inflater.inflate(R.menu.main, menu)
 
         val searchView = menu.findItem(R.id.action_search).actionView as SearchView
 
-        searchView.onQueryTextChanged(){query ->
+        searchView.onQueryTextChanged() { query ->
             viewModel.setSearchQuery(query)
         }
 
@@ -103,18 +111,21 @@ class MoviesFragment : Fragment(), MovieClickListener {
         }
 
 
-
-}
-
-override fun onMovieClickListener(movie: Movie?) {
-    Toast.makeText(context, movie?.title, Toast.LENGTH_SHORT).show()
-    viewModel.setMovie(movie)
-
-    movie?.id?.let {
-        val action = MoviesFragmentDirections.actionMoviesFragmentToDetailsFragment2(movie.id)
-        findNavController().navigate(action)
     }
-}
+
+
+
+
+
+    override fun onMovieClickListener(movie: Movie?) {
+        Toast.makeText(context, movie?.title, Toast.LENGTH_SHORT).show()
+        viewModel.setMovie(movie)
+
+        movie?.id?.let {
+            val action = MoviesFragmentDirections.actionMoviesFragmentToDetailsFragment2(it)
+            findNavController().navigate(action)
+        }
+    }
 }
 
 

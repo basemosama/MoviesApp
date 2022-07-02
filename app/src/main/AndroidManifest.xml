@@ -15,7 +15,7 @@
         
 
         <activity
-            android:name="com.basemosama.movies.MainActivity"
+            android:name="com.basemosama.movies.ui.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

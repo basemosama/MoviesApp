@@ -34,6 +34,7 @@ sealed class NetworkResult<T> {
     companion object {
         private const val DEFAULT_ERROR = "Sorry, Something went wrong"
         fun <T> create(error: Throwable): Error<T> {
+            Timber.d("NetworkResult: ${error.message}")
             var  errorMessage = error.message ?: DEFAULT_ERROR
             if(error is IOException){
                 errorMessage = "Please check your internet connection and try again "

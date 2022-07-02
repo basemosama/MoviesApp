@@ -9,7 +9,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.basemosama.movies.data.Movie
 import com.basemosama.movies.databinding.ItemMovieBinding
 
-class PagingMovieAdapter(private val movieClickListener: MovieClickListener) : PagingDataAdapter<Movie, PagingMovieAdapter.PagingMovieViewHolder>(diffUtil) {
+class PagingMovieAdapter(private val movieClickListener: MovieClickListener)
+    : PagingDataAdapter<Movie, PagingMovieAdapter.PagingMovieViewHolder>(diffUtil) {
 
     companion object{
         val diffUtil = object : DiffUtil.ItemCallback<Movie>() {
@@ -23,7 +24,7 @@ class PagingMovieAdapter(private val movieClickListener: MovieClickListener) : P
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PagingMovieViewHolder {
-        return PagingMovieAdapter.PagingMovieViewHolder.from(parent,movieClickListener)
+        return PagingMovieViewHolder.from(parent,movieClickListener)
     }
 
     override fun onBindViewHolder(holder: PagingMovieViewHolder, position: Int) {

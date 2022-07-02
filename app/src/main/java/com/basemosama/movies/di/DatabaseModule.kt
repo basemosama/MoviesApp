@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.basemosama.movies.database.AppDatabase
 import com.basemosama.movies.database.MovieDao
+import com.basemosama.movies.database.MovieRemoteKeyDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -34,6 +35,10 @@ object DatabaseModule {
         return database.movieDao()
     }
 
-
+    @Singleton
+    @Provides
+    fun provideRemoteMovieKeyDao(database: AppDatabase): MovieRemoteKeyDao {
+        return database.movieRemoteKeyDao()
+    }
 }
 
