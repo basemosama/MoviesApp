@@ -16,9 +16,12 @@ interface MovieRemoteKeyDao {
     @Query("DELETE FROM movie_remote_key_table WHERE searchQuery = :query")
     suspend fun deleteRemoteKeys(query: String)
 
-    @Transaction
     @Query("DELETE FROM movies WHERE id IN ( SELECT movieId FROM movie_remote_key_table WHERE searchQuery = :query)")
     suspend fun deleteMoviesByRemoteKeys(query: String)
+
+
+    @Query("DELETE FROM movies")
+    suspend fun deleteMoviesByRemoteKeys()
 
     @Transaction
     suspend fun insertAndDeleteMoviesAndRemoteKeys(
@@ -31,11 +34,18 @@ interface MovieRemoteKeyDao {
         if (loadType == LoadType.REFRESH) {
             Timber.d("REMOTE SOURCE DELETING:")
 
-            deleteMoviesByRemoteKeys(query)
+            deleteMoviesByRemoteKeys()
             deleteRemoteKeys(query)
 
         }
         Timber.d("REMOTE SOURCE INSERTING ${movies.size} Movies and ${remoteKeys.size} RemoteKeys :")
+        val updatedMovies :StringBuilder = StringBuilder()
+        movies.forEach{movie->
+            updatedMovies.append(movie.id)
+                .append(", ")
+
+        }
+        Timber.d("CURRENT PAGING MOVIES DATABASE: $updatedMovies")
 
         insertMovies(movies)
         insertRemoteKey(remoteKeys)

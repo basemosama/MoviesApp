@@ -12,13 +12,14 @@ data class Movie(
     @PrimaryKey
     var id:Long,
     var title: String,
-    @SerializedName("original_title")
+ //   @SerializedName("original_title")
     var originalTitle: String?,
     var overview: String?,
+    @SerializedName("isAdult2")
     var adult: Boolean,
-    @SerializedName("backdrop_path")
+ //   @SerializedName("backdrop_path")
     var backdropPath: String?,
-    @SerializedName("poster_path")
+ //   @SerializedName("poster_path")
     var posterPath: String?,
     var budget: Long?,
     var revenue: Long?,

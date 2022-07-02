@@ -19,6 +19,7 @@ import com.basemosama.movies.databinding.FragmentMoviesBinding
 import com.basemosama.movies.utils.onQueryTextChanged
 import com.basemosama.movies.utils.repeatOnLifeCycle
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class MoviesFragment : Fragment(), MovieClickListener {
@@ -41,8 +42,11 @@ class MoviesFragment : Fragment(), MovieClickListener {
 
     private fun setupUI() {
         pagingMovieAdapter = PagingMovieAdapter(this)
+        //pagingMovieAdapter.setHasStableIds(true)
+
+        val gridlayoutManager = GridLayoutManager(context, 3)
         moviesBinding.moviesRv.apply {
-            layoutManager = GridLayoutManager(context, 2)
+            layoutManager = gridlayoutManager
             adapter = pagingMovieAdapter
         }
 
@@ -68,6 +72,17 @@ class MoviesFragment : Fragment(), MovieClickListener {
 
             pagingMovieAdapter.submitData(data)
         }
+
+        repeatOnLifeCycle(pagingMovieAdapter.onPagesUpdatedFlow){
+            val updatedMovies :StringBuilder = StringBuilder()
+            pagingMovieAdapter.snapshot().forEach{movie->
+                updatedMovies.append(movie?.id)
+                    .append(", ")
+            }
+
+            Timber.d("CURRENT PAGING MOVIES UI: $updatedMovies")
+        }
+
 
 //        //scroll to top after updating the adapter
 //        repeatOnLifeCycle(pagingMovieAdapter.loadStateFlow

@@ -64,16 +64,16 @@ class MovieRemoteMediator(
 
         Timber.d("REMOTE SOURCE NETWORK LOAD KEY: $page")
 
-        val response = repository.getMoviesFromApi(page)
+        val response = repository.getMoviesFromApi2(page)
 
         if (response is NetworkResult.Success) {
-            val movies = response.data.results ?: emptyList()
+            val movies = response.data ?: emptyList()
             val nextPage: Int? =
-                if (response.data.page < response.data.totalPages) response.data.page + 1 else null
+                if (page <7) page + 1 else null
 
             //    movies.forEach { it.createdAt = Date() }
             val remoteKeys: List<MovieRemoteKey> = movies.map { movie ->
-                MovieRemoteKey(searchQuery, movie.id, response.data.page, nextPage)
+                MovieRemoteKey(searchQuery, movie.id, page, nextPage)
             }
 
 //            db.withTransaction {

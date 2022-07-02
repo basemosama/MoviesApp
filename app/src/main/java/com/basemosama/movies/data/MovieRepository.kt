@@ -47,6 +47,9 @@ class MovieRepository @Inject constructor(
     suspend fun getMoviesFromApi(page: Int = 1): NetworkResult<PagedResponse<Movie>> =
         apiClient.getPopularMovies("en-US", page,"popularity.desc")
 
+    suspend fun getMoviesFromApi2(page: Int = 1): NetworkResult<List<Movie>> =
+        apiClient.getPopularMovies( page)
+
     private fun getPagedMoviesFromDB(sortType: SortType, search: String): PagingSource<Int, Movie> =
         movieDao.getPagedMovies(sortType, search)
 

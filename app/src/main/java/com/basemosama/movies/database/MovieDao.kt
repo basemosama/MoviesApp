@@ -20,7 +20,7 @@ interface MovieDao {
         when(sortType){
             SortType.ASC ->  getPagedSortedMoviesASC(searchQuery)
             SortType.DESC -> getPagedSortedMoviesDESC(searchQuery)
-            SortType.DEFAULT -> getDefaultPagedMovies(searchQuery.ifEmpty { "DEFAULT_QUERY" })
+            SortType.DEFAULT -> getDefaultPagedMovies()
         }
 
 
@@ -43,10 +43,8 @@ interface MovieDao {
 
     @Transaction
     @Query("SELECT * FROM movies" +
-            " INNER JOIN movie_remote_key_table on movies.id = movie_remote_key_table.movieId" +
-            " WHERE searchQuery = :search" +
-            " ORDER BY movie_remote_key_table.id")
-    fun getDefaultPagedMovies(search:String): PagingSource<Int,Movie>
+            " ORDER BY popularity DESC")
+    fun getDefaultPagedMovies(): PagingSource<Int,Movie>
 
     @Query("SELECT * FROM movies WHERE title LIKE '%' || :search || '%'" +
             " OR originalTitle LIKE :search" +
