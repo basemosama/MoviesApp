@@ -9,7 +9,11 @@ import retrofit2.http.Query
 interface ApiService {
 
     companion object{
-         const val BASE_URL: String = "https://api.themoviedb.org/3/"
+//         const val BASE_URL: String = "https://api.themoviedb.org/3/"
+        //const val BASE_URL: String = "http://10.0.2.2:3000/";
+        const val BASE_URL: String = "http://192.168.1.104:3000";
+
+
     }
 
 
@@ -33,5 +37,11 @@ interface ApiService {
         @Query("page") page: Int,
         @Query("sort_by") sortBy: String,
     ): NetworkResult<PagedResponse<Movie>>
+
+
+    @GET("movies?_limit=20&_sort=popularity&_order=desc")
+    suspend fun getPopularMovies(
+        @Query("_page") page: Int
+    ): NetworkResult<List<Movie>>
 
 }
