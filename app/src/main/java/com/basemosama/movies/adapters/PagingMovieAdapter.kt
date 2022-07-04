@@ -41,6 +41,7 @@ class PagingMovieAdapter(private val movieClickListener: MovieClickListener)
     }
 
 
+
     class PagingMovieViewHolder(private val movieBinding: ItemMovieBinding,private val movieClickListener: MovieClickListener) :
         RecyclerView.ViewHolder(movieBinding.root) , View.OnClickListener{
 

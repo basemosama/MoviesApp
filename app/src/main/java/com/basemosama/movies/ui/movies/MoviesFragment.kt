@@ -7,9 +7,10 @@ import android.widget.SearchView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import androidx.paging.LoadState
 import androidx.recyclerview.widget.GridLayoutManager
 import com.basemosama.movies.R
 import com.basemosama.movies.adapters.MovieClickListener
@@ -20,8 +21,7 @@ import com.basemosama.movies.databinding.FragmentMoviesBinding
 import com.basemosama.movies.utils.onQueryTextChanged
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.distinctUntilChangedBy
-import kotlinx.coroutines.flow.filter
+import timber.log.Timber
 
 @AndroidEntryPoint
 class MoviesFragment : Fragment(), MovieClickListener {
@@ -47,13 +47,16 @@ class MoviesFragment : Fragment(), MovieClickListener {
         pagingMovieAdapter = PagingMovieAdapter(this)
         moviesBinding.moviesRv.apply {
            // setHasFixedSize(true)
-            layoutManager = GridLayoutManager(context, 2)
+            layoutManager = GridLayoutManager(context, 3)
             adapter = pagingMovieAdapter
 
         }
 
         setHasOptionsMenu(true)
     }
+
+
+
 
 
     private fun getMovies() {
@@ -72,26 +75,43 @@ class MoviesFragment : Fragment(), MovieClickListener {
 
 
 
-        lifecycleScope.launchWhenCreated {
-            viewModel.movies.collectLatest {
-                Log.d("REMOTE SOURCE", "SUBMITTING ITEMS")
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
 
-                pagingMovieAdapter.submitData(it)
+
+                viewModel.movies.collectLatest {
+                    Log.d("REMOTE SOURCE", "SUBMITTING ITEMS")
+
+                    pagingMovieAdapter.submitData(it)
+                }
             }
         }
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
 
-        lifecycleScope.launchWhenCreated {
-            pagingMovieAdapter.loadStateFlow
-                // Use a state-machine to track LoadStates such that we only transition to
-                // NotLoading from a RemoteMediator load if it was also presented to UI.
-                // Only emit when REFRESH changes, as we only want to react on loads replacing the
-                // list.
-                .distinctUntilChangedBy { it.refresh }
-                // Only react to cases where REFRESH completes i.e., NotLoading.
-                .filter { it.refresh is LoadState.NotLoading }
-                // Scroll to top is synchronous with UI updates, even if remote load was triggered.
-                .collect { moviesBinding.moviesRv.scrollToPosition(0) }
-        }
+                pagingMovieAdapter.onPagesUpdatedFlow.collectLatest {
+
+                    val movies = StringBuilder("")
+                    pagingMovieAdapter.snapshot().items.forEach {
+                        movies.append(it.title).append("\n")
+                    }
+                    Timber.d("REMOTE SOURCE DATA SUBMITTED ITEMS $movies")
+
+                }
+            }}
+
+//        lifecycleScope.launchWhenCreated {
+//            pagingMovieAdapter.loadStateFlow
+//                // Use a state-machine to track LoadStates such that we only transition to
+//                // NotLoading from a RemoteMediator load if it was also presented to UI.
+//                // Only emit when REFRESH changes, as we only want to react on loads replacing the
+//                // list.
+//                .distinctUntilChangedBy { it.refresh }
+//                // Only react to cases where REFRESH completes i.e., NotLoading.
+//                .filter { it.refresh is LoadState.NotLoading }
+//                // Scroll to top is synchronous with UI updates, even if remote load was triggered.
+//                .collect { moviesBinding.moviesRv.scrollToPosition(0) }
+//        }
 
 //        //scroll to top after updating the adapter
 //        repeatOnLifeCycle(pagingMovieAdapter.loadStateFlow

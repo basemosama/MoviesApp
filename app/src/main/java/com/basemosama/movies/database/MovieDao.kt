@@ -9,33 +9,15 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface MovieDao {
 
-    fun getSortedMovies(sortType: SortType, searchQuery: String) : Flow<List<Movie>> =
-        when(sortType){
-            SortType.ASC ->  getSortedMoviesASC(searchQuery)
-            SortType.DESC -> getSortedMoviesDESC(searchQuery)
-            SortType.DEFAULT -> getMovies()
-        }
-
     fun getPagedMovies(sortType: SortType, searchQuery: String) : PagingSource<Int,Movie> =
-        when(sortType){
-            SortType.ASC ->  getPagedSortedMoviesASC(searchQuery)
-            SortType.DESC -> getPagedSortedMoviesDESC(searchQuery)
-            SortType.DEFAULT -> getDefaultPagedMovies(searchQuery.ifEmpty { "DEFAULT_QUERY" })
-        }
+        getDefaultPagedMovies(searchQuery.ifEmpty { "DEFAULT_QUERY" })
 
 
-    @Query("SELECT * FROM movies ORDER BY popularity DESC")
+
+    @Query("SELECT * FROM movies ORDER BY id DESC")
     fun getMovies(): Flow<List<Movie>>
 
-    @Query("SELECT * FROM movies WHERE title LIKE '%' || :search || '%'" +
-            " OR originalTitle LIKE :search" +
-            " ORDER BY title ASC")
-    fun getSortedMoviesASC(search:String): Flow<List<Movie>>
 
-    @Query("SELECT * FROM movies WHERE title LIKE '%' || :search || '%'" +
-            " OR originalTitle LIKE :search" +
-            " ORDER BY title DESC")
-    fun getSortedMoviesDESC(search:String): Flow<List<Movie>>
 
     @Transaction
     @Query("SELECT * FROM movies" +
@@ -44,15 +26,6 @@ interface MovieDao {
             " ORDER BY movie_remote_key_table.id")
     fun getDefaultPagedMovies(search:String): PagingSource<Int,Movie>
 
-    @Query("SELECT * FROM movies WHERE title LIKE '%' || :search || '%'" +
-            " OR originalTitle LIKE :search" +
-            " ORDER BY title ASC")
-    fun getPagedSortedMoviesASC(search:String): PagingSource<Int,Movie>
-
-    @Query("SELECT * FROM movies WHERE title LIKE '%' || :search || '%'" +
-            " OR originalTitle LIKE :search" +
-            " ORDER BY title DESC")
-    fun getPagedSortedMoviesDESC(search:String): PagingSource<Int,Movie>
 
 
 

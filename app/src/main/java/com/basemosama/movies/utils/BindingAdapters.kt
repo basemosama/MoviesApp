@@ -1,14 +1,11 @@
 package com.basemosama.movies.utils
 
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import com.basemosama.movies.R
 import com.basemosama.movies.data.ImageType
 import com.basemosama.movies.data.Movie
 import com.bumptech.glide.Glide
-import java.text.SimpleDateFormat
-import java.util.*
 
 const val BASE_IMAGE_URL = "https://image.tmdb.org/t/p/"
 
@@ -39,15 +36,15 @@ fun setMovieImage(view: ImageView, movie: Movie?, type: ImageType) {
     }
 }
 
-@BindingAdapter("date")
-fun setDate(view: TextView, movie: Movie?) {
-    movie?.releaseDate?.let {
-        val date = movie.releaseDate?.let {
-            SimpleDateFormat("yyyy-mm-dd", Locale.US).format(it)
-        }
-        view.text = date
-    }
-}
+//@BindingAdapter("date")
+//fun setDate(view: TextView, movie: Movie?) {
+//    movie?.releaseDate?.let {
+//        val date = movie.releaseDate?.let {
+//            SimpleDateFormat("yyyy-mm-dd", Locale.US).format(it)
+//        }
+//        view.text = date
+//    }
+//}
 
 
 fun getImageWidth(type: ImageType): String = when (type) {

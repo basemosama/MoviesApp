@@ -4,18 +4,16 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
-import androidx.room.withTransaction
 import com.basemosama.movies.data.Movie
-import com.basemosama.movies.database.AppDatabase
-import com.basemosama.movies.network.ApiService
+import com.basemosama.movies.data.MovieRepository
 import com.basemosama.movies.network.utils.NetworkResult
 import timber.log.Timber
 
 @OptIn(ExperimentalPagingApi::class)
 class MovieRemoteMediator(
     private val query: String ="",
-    private val database: AppDatabase,
-    private val apiClient: ApiService
+    private val repository: MovieRepository
+
 ) : RemoteMediator<Int, Movie>() {
 
     companion object {
@@ -45,14 +43,14 @@ class MovieRemoteMediator(
                 Timber.d("REMOTE SOURCE last Item RemoteKey  :${remoteKey} ")
 
                 val nextPage = remoteKey?.nextPage
-                    ?: return MediatorResult.Success(endOfPaginationReached = true)
+                    ?: return MediatorResult.Success(endOfPaginationReached = remoteKey != null)
                 nextPage
             }
         }
 
         Timber.d("REMOTE SOURCE LOADING Page :${page} ")
 
-        val response = apiClient.getPopularMovies("en-US", page,"popularity.desc")
+        val response = repository.getMoviesFromApi(page)
 
 
         if (response is NetworkResult.Success) {
@@ -64,22 +62,7 @@ class MovieRemoteMediator(
                 MovieRemoteKey(searchQuery, movie.id, nextPage)
             }
 
-            database.withTransaction {
-                if (loadType == LoadType.REFRESH) {
-                    //   Timber.d("REMOTE SOURCE DELETING:")
-
-                    database.movieRemoteKeyDao().deleteMoviesByRemoteKeys(query)
-                    database.movieRemoteKeyDao().deleteRemoteKeys(query)
-
-                }
-                // Timber.d("REMOTE SOURCE INSERTING ${movies.size} Movies and ${remoteKeys.size} RemoteKeys :")
-
-                database.movieDao().insertMovies(movies)
-                database.movieRemoteKeyDao().insertRemoteKey(remoteKeys)
-
-
-            }
-
+            repository.insertAndDeleteMoviesAndRemoteKeysToDB(searchQuery, movies, remoteKeys,loadType)
 
             return MediatorResult.Success(
                 endOfPaginationReached = nextPage == null
@@ -98,9 +81,8 @@ class MovieRemoteMediator(
 
         return state.pages.lastOrNull() { it.data.isNotEmpty() }?.data?.lastOrNull()
             ?.let { movie ->
-                database.withTransaction {
-                    database.movieRemoteKeyDao().getRemoteKey(movie.id.toInt(), searchQuery)
-                }
+                    repository.getMovieRemoteKey(movie.id.toInt(), searchQuery)
+
             }
 
     }

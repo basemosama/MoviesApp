@@ -2,20 +2,18 @@ package com.basemosama.movies.data
 
 import android.util.Log
 import androidx.paging.*
+import com.basemosama.movies.data.MovieRepository.Companion.config
 import com.basemosama.movies.data.network.PagedResponse
 import com.basemosama.movies.database.AppDatabase
 import com.basemosama.movies.database.MovieDao
 import com.basemosama.movies.database.MovieRemoteKeyDao
 import com.basemosama.movies.network.ApiService
-import com.basemosama.movies.network.networkBoundResource
 import com.basemosama.movies.network.utils.NetworkResult
 import com.basemosama.movies.pagination.MovieRemoteKey
 import com.basemosama.movies.pagination.MovieRemoteMediator
-import com.basemosama.movies.utils.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -29,18 +27,15 @@ class MovieRepository @Inject constructor(
     companion object {
         private const val PAGE_SIZE =20
         val config = PagingConfig(pageSize = PAGE_SIZE,
-        enablePlaceholders = false)
+        enablePlaceholders = true)
     }
 
-    private val pagingSourceFactory = {
-        Timber.d("REMOTE SOURCE getPagingMovies :.")
-       getPagedMoviesFromDB(SortType.DEFAULT, "")}
 
 
     @OptIn(ExperimentalPagingApi::class)
     fun getPagingMovies() = Pager(
-    config = PagingConfig(20),
-    remoteMediator = MovieRemoteMediator("",database,apiClient)
+    config = config,
+    remoteMediator = MovieRemoteMediator("",this)
     ) {
         Log.d("REMOTE SOURCE", "getting PagingSource")
         movieDao.getDefaultPagedMovies(  "DEFAULT_QUERY" )
@@ -79,27 +74,27 @@ class MovieRepository @Inject constructor(
         movieDao.insertMovies(movies)
     }
 
-
-    fun getMovies(sortType: SortType, search: String): Flow<Resource<List<Movie>>> =
-        networkBoundResource(
-            query = {
-                Timber.d("Sorting in Repository has changed to $sortType and search to $search")
-                movieDao.getSortedMovies(sortType, search)
-            },
-            fetch = { getMoviesFromApi() },
-            saveFetchResult = { response ->
-                run {
-                    response.results?.let {
-                        insertMoviesToDB(it)
-                    }
-                }
-            }, shouldFetch = {
-                //should implement your caching strategy
-                it.isEmpty()
-
-            }
-
-        )
+//
+//    fun getMovies(sortType: SortType, search: String): Flow<Resource<List<Movie>>> =
+//        networkBoundResource(
+//            query = {
+//                Timber.d("Sorting in Repository has changed to $sortType and search to $search")
+//                movieDao.getSortedMovies(sortType, search)
+//            },
+//            fetch = { getMoviesFromApi() },
+//            saveFetchResult = { response ->
+//                run {
+//                    response.results?.let {
+//                        insertMoviesToDB(it)
+//                    }
+//                }
+//            }, shouldFetch = {
+//                //should implement your caching strategy
+//                it.isEmpty()
+//
+//            }
+//
+//        )
 
 
 
