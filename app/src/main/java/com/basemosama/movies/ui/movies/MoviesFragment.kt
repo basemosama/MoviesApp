@@ -42,7 +42,7 @@ class MoviesFragment : Fragment(), MovieClickListener {
     private fun setupUI() {
         pagingMovieAdapter = PagingMovieAdapter(this)
         moviesBinding.moviesRv.apply {
-            layoutManager = GridLayoutManager(context, 2)
+            layoutManager = GridLayoutManager(context, 3)
             adapter = pagingMovieAdapter
         }
 
@@ -64,7 +64,6 @@ class MoviesFragment : Fragment(), MovieClickListener {
         }
 
         repeatOnLifeCycle(viewModel.movies2) { data ->
-          ///  Timber.d("REMOTE SOURCE SUBMITTING DATA:")
 
             pagingMovieAdapter.submitData(data)
         }

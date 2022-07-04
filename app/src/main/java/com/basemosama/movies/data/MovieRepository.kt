@@ -2,7 +2,6 @@ package com.basemosama.movies.data
 
 import androidx.paging.*
 import com.basemosama.movies.data.network.PagedResponse
-import com.basemosama.movies.database.AppDatabase
 import com.basemosama.movies.database.MovieDao
 import com.basemosama.movies.database.MovieRemoteKeyDao
 import com.basemosama.movies.network.ApiService
@@ -20,7 +19,6 @@ import javax.inject.Inject
 
 class MovieRepository @Inject constructor(
     private val apiClient: ApiService,
-    private val database: AppDatabase,
     private val movieDao: MovieDao,
     private val movieRemoteKeyDao: MovieRemoteKeyDao
 ) {
@@ -29,25 +27,21 @@ class MovieRepository @Inject constructor(
         private const val PAGE_SIZE = 20
         val config = PagingConfig(
             pageSize = PAGE_SIZE,
-            initialLoadSize = PAGE_SIZE *2,
-            maxSize = PAGE_SIZE * 2,
-            prefetchDistance = 8,
-            enablePlaceholders = false
+            enablePlaceholders = true
         )
     }
     @OptIn(ExperimentalPagingApi::class)
     fun getPagingMovies() = Pager(
          config,
-            remoteMediator = MovieRemoteMediator("", this,database)
-        ) {
-        getPagedMoviesFromDB(SortType.DEFAULT, "")
+            remoteMediator = MovieRemoteMediator(repository = this)
+        ) {   getPagedMoviesFromDB()
             }.flow
 
 
     suspend fun getMoviesFromApi(page: Int = 1): NetworkResult<PagedResponse<Movie>> =
         apiClient.getPopularMovies("en-US", page,"popularity.desc")
 
-    private fun getPagedMoviesFromDB(sortType: SortType, search: String): PagingSource<Int, Movie> =
+    private fun getPagedMoviesFromDB(sortType: SortType = SortType.DEFAULT, search: String = ""): PagingSource<Int, Movie> =
         movieDao.getPagedMovies(sortType, search)
 
 

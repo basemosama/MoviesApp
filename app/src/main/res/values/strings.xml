@@ -5,4 +5,5 @@
     <string name="order_movies_by_title_asc">Order movies By title ASC</string>
     <string name="order_movies_by_title_desc">Order movies By title DESC</string>
     <string name="default_order">Default order</string>
+    <string name="movie_poster">Movie Poster</string>
 </resources>
