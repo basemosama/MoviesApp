@@ -22,17 +22,18 @@
             android:id="@+id/background_image"
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            app:image="@{movie.backdropPath}"
+            app:image="@{movie.posterPath}"
             app:type="@{ImageType.BACKDROP}"
             tools:scaleType="fitXY"
-            tools:src="@drawable/madmax" />
+            tools:src="@drawable/madmax"
+            tools:ignore="MissingConstraints" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:layout_marginStart="44dp"
-            android:text="@{movie.originalTitle}"
+            android:text="@{movie.title}"
             android:textColor="@color/white"
             android:textSize="25sp"
             app:layout_constraintBottom_toBottomOf="@+id/background_image"
@@ -83,7 +84,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:text='@{movie.voteAverage+ " /10"}'
+                        android:text='@{movie.title+ " /10"}'
                         android:textColor="@color/black"
                         android:textSize="20sp"
                         tools:text="7/10" />
@@ -111,7 +112,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:text='@{movie.runtime + " m"}'
+                        android:text='@{movie.title + " m"}'
                         android:textColor="@color/black"
                         android:textSize="20sp"
                         tools:text="129m" />
@@ -142,7 +143,6 @@
                         android:gravity="center"
                         android:textColor="@color/black"
                         android:textSize="20sp"
-                        app:date="@{movie}"
                         tools:text="7/10" />
                 </LinearLayout>
             </LinearLayout>
@@ -165,7 +165,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:padding="20dp"
-                android:text="@{movie.overview}"
+                android:text="@{movie.title}"
                 android:textColor="@color/black"
                 android:textSize="20sp"
                 tools:text="plot is mad max" />

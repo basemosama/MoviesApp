@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 
 
 @Entity(tableName = "movie_remote_key_table")
-data class MovieRemoteKey(
+data class MovieRemoteKey2(
     @PrimaryKey(autoGenerate = true)
     val id: Long?,
     val searchQuery: String,

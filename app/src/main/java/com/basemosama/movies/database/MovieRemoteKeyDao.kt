@@ -29,16 +29,17 @@ interface MovieRemoteKeyDao {
     ) {
 
         if (loadType == LoadType.REFRESH) {
-            Timber.d("REMOTE SOURCE DELETING:")
+           Timber.d("REMOTE SOURCE DELETING:")
 
             deleteMoviesByRemoteKeys(query)
             deleteRemoteKeys(query)
 
         }
-        Timber.d("REMOTE SOURCE INSERTING ${movies.size} Movies and ${remoteKeys.size} RemoteKeys :")
+       Timber.d("REMOTE SOURCE INSERTING ${movies.size} Movies and ${remoteKeys.size} RemoteKeys :")
 
         insertMovies(movies)
         insertRemoteKey(remoteKeys)
+        Timber.d("REMOTE SOURCE DATA INSERTED TO DB")
 
 
     }
