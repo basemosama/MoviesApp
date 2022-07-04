@@ -1,12 +1,13 @@
 package com.basemosama.movies.ui.movies
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.SearchView
 import android.widget.Toast
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.GridLayoutManager
@@ -17,14 +18,17 @@ import com.basemosama.movies.data.Movie
 import com.basemosama.movies.data.SortType
 import com.basemosama.movies.databinding.FragmentMoviesBinding
 import com.basemosama.movies.utils.onQueryTextChanged
-import com.basemosama.movies.utils.repeatOnLifeCycle
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChangedBy
+import kotlinx.coroutines.flow.filter
 
 @AndroidEntryPoint
 class MoviesFragment : Fragment(), MovieClickListener {
     private lateinit var moviesBinding: FragmentMoviesBinding
     private lateinit var pagingMovieAdapter: PagingMovieAdapter
-    private val viewModel: MoviesViewModel by activityViewModels()
+    private val viewModel: MoviesViewModel by viewModels()
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -42,8 +46,10 @@ class MoviesFragment : Fragment(), MovieClickListener {
     private fun setupUI() {
         pagingMovieAdapter = PagingMovieAdapter(this)
         moviesBinding.moviesRv.apply {
+           // setHasFixedSize(true)
             layoutManager = GridLayoutManager(context, 2)
             adapter = pagingMovieAdapter
+
         }
 
         setHasOptionsMenu(true)
@@ -52,21 +58,39 @@ class MoviesFragment : Fragment(), MovieClickListener {
 
     private fun getMovies() {
 
-        repeatOnLifeCycle(pagingMovieAdapter.loadStateFlow) { loadStates ->
-            val state = loadStates.refresh
-            moviesBinding.loadingView.isVisible = state is LoadState.Loading
+//        repeatOnLifeCycle(pagingMovieAdapter.loadStateFlow) { loadStates ->
+//            val state = loadStates.refresh
+//            moviesBinding.loadingView.isVisible = state is LoadState.Loading
+//
+//            if (state is LoadState.Error) {
+//                val errorMsg = state.error.message
+//                Toast.makeText(context, errorMsg, Toast.LENGTH_LONG).show()
+//            }
+//
+//        }
 
-            if (state is LoadState.Error) {
-                val errorMsg = state.error.message
-                Toast.makeText(context, errorMsg, Toast.LENGTH_LONG).show()
+
+
+
+        lifecycleScope.launchWhenCreated {
+            viewModel.movies.collectLatest {
+                Log.d("REMOTE SOURCE", "SUBMITTING ITEMS")
+
+                pagingMovieAdapter.submitData(it)
             }
-
         }
 
-        repeatOnLifeCycle(viewModel.movies2) { data ->
-          ///  Timber.d("REMOTE SOURCE SUBMITTING DATA:")
-
-            pagingMovieAdapter.submitData(data)
+        lifecycleScope.launchWhenCreated {
+            pagingMovieAdapter.loadStateFlow
+                // Use a state-machine to track LoadStates such that we only transition to
+                // NotLoading from a RemoteMediator load if it was also presented to UI.
+                // Only emit when REFRESH changes, as we only want to react on loads replacing the
+                // list.
+                .distinctUntilChangedBy { it.refresh }
+                // Only react to cases where REFRESH completes i.e., NotLoading.
+                .filter { it.refresh is LoadState.NotLoading }
+                // Scroll to top is synchronous with UI updates, even if remote load was triggered.
+                .collect { moviesBinding.moviesRv.scrollToPosition(0) }
         }
 
 //        //scroll to top after updating the adapter

@@ -37,10 +37,6 @@ interface MovieDao {
             " ORDER BY title DESC")
     fun getSortedMoviesDESC(search:String): Flow<List<Movie>>
 
-
-
-
-
     @Transaction
     @Query("SELECT * FROM movies" +
             " INNER JOIN movie_remote_key_table on movies.id = movie_remote_key_table.movieId" +

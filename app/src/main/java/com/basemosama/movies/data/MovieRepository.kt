@@ -1,5 +1,6 @@
 package com.basemosama.movies.data
 
+import android.util.Log
 import androidx.paging.*
 import com.basemosama.movies.data.network.PagedResponse
 import com.basemosama.movies.database.AppDatabase
@@ -20,35 +21,51 @@ import javax.inject.Inject
 
 class MovieRepository @Inject constructor(
     private val apiClient: ApiService,
-    private val database: AppDatabase,
     private val movieDao: MovieDao,
-    private val movieRemoteKeyDao: MovieRemoteKeyDao
+    private val movieRemoteKeyDao: MovieRemoteKeyDao,
+    private val database: AppDatabase
 ) {
 
     companion object {
-        private const val PAGE_SIZE = 20
-        val config = PagingConfig(
-            pageSize = PAGE_SIZE,
-            initialLoadSize = PAGE_SIZE *2,
-            maxSize = PAGE_SIZE * 2,
-            prefetchDistance = 8,
-            enablePlaceholders = false
-        )
+        private const val PAGE_SIZE =20
+        val config = PagingConfig(pageSize = PAGE_SIZE,
+        enablePlaceholders = false)
     }
+
+    private val pagingSourceFactory = {
+        Timber.d("REMOTE SOURCE getPagingMovies :.")
+       getPagedMoviesFromDB(SortType.DEFAULT, "")}
+
+
     @OptIn(ExperimentalPagingApi::class)
     fun getPagingMovies() = Pager(
-         config,
-            remoteMediator = MovieRemoteMediator("", this,database)
-        ) {
-        getPagedMoviesFromDB(SortType.DEFAULT, "")
-            }.flow
+    config = PagingConfig(20),
+    remoteMediator = MovieRemoteMediator("",database,apiClient)
+    ) {
+        Log.d("REMOTE SOURCE", "getting PagingSource")
+        movieDao.getDefaultPagedMovies(  "DEFAULT_QUERY" )
+    }.flow
+
+    suspend fun insertAndDeleteMoviesAndRemoteKeysToDB(
+        query: String,
+        movies: List<Movie>,
+        remoteKeys: List<MovieRemoteKey>,
+        loadType: LoadType
+    )= withContext(Dispatchers.IO) {
+        movieRemoteKeyDao.insertAndDeleteMoviesAndRemoteKeys(query,movies, remoteKeys, loadType)
+    }
+
+
+    suspend fun getMovieRemoteKey(itemId:Int,query:String):MovieRemoteKey? {
+        return movieRemoteKeyDao.getRemoteKey(itemId,query)
+    }
 
 
     suspend fun getMoviesFromApi(page: Int = 1): NetworkResult<PagedResponse<Movie>> =
         apiClient.getPopularMovies("en-US", page,"popularity.desc")
 
     private fun getPagedMoviesFromDB(sortType: SortType, search: String): PagingSource<Int, Movie> =
-        movieDao.getPagedMovies(sortType, search)
+        movieDao.getDefaultPagedMovies( search.ifEmpty { "DEFAULT_QUERY" })
 
 
     fun getMoviesFromDB(): Flow<List<Movie>> = movieDao.getMovies()
@@ -86,17 +103,4 @@ class MovieRepository @Inject constructor(
 
 
 
-    suspend fun insertAndDeleteMoviesAndRemoteKeysToDB(
-        query: String,
-        movies: List<Movie>,
-        remoteKeys: List<MovieRemoteKey>,
-        loadType: LoadType
-    )= withContext(Dispatchers.IO) {
-        movieRemoteKeyDao.insertAndDeleteMoviesAndRemoteKeys(query,movies, remoteKeys, loadType)
-    }
-
-
-    suspend fun getMovieRemoteKey(itemId:Int,query:String):MovieRemoteKey? {
-        return movieRemoteKeyDao.getRemoteKey(itemId,query)
-    }
 }

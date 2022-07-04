@@ -1,6 +1,5 @@
 package com.basemosama.movies.data
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
@@ -33,10 +32,6 @@ data class Movie(
     @SerializedName("genre_ids") var genreIds: LongArray?,
     @SerializedName("release_date")
     var releaseDate: Date?,
-    @ColumnInfo(name = "created_at", defaultValue = "CURRENT_TIMESTAMP")
-    var createdAt:Date?,
-    @ColumnInfo(name = "updated_at", defaultValue = "CURRENT_TIMESTAMP")
-    var updatedAt:Date?
 
 
 )

@@ -22,7 +22,10 @@ class MoviesViewModel @Inject constructor(
     private val searchFlow = MutableStateFlow("")
     private val sortFlow = preferenceManger.preferencesFlow
 
-    val movies2 = repository.getPagingMovies().cachedIn(viewModelScope)
+    val movies =
+        repository.getPagingMovies()
+            .cachedIn(viewModelScope)
+
 //
 //    val movies: StateFlow<Resource<List<Movie>>> = sortFlow.combine(searchFlow) { sort, search ->
 //        Pair(sort, search)

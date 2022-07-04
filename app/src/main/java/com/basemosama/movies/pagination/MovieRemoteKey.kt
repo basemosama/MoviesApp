@@ -10,9 +10,8 @@ data class MovieRemoteKey(
     val id: Long?,
     val searchQuery: String,
     val movieId: Long,
-    val page: Int,
     val nextPage: Int?
 ){
-    constructor(query: String, movieId: Long, page: Int, nextPage: Int?) : this(null, query, movieId, page, nextPage)
+    constructor(query: String, movieId: Long, nextPage: Int?) : this(null, query, movieId, nextPage)
 
 }
