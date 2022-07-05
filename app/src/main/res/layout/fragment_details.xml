@@ -8,15 +8,14 @@
         <variable
             name="movie"
             type="com.basemosama.movies.data.Movie" />
-
-        <import type="com.basemosama.movies.data.ImageType" />
+        <import type="com.basemosama.movies.data.ImageType"/>
 
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".ui.details.DetailsFragment">
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.details.DetailsFragment">
 
         <ImageView
             android:id="@+id/background_image"
@@ -56,121 +55,121 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/background_image">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:baselineAligned="false"
-                android:orientation="horizontal">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawablePadding="5dp"
-                        android:gravity="center"
-                        android:text="Rating:"
-                        android:textColor="#023863"
-                        android:textSize="22sp"
-                        app:drawableBottomCompat="@drawable/ic_rating"
-
-                        />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text='@{movie.title+ " /10"}'
-                        android:textColor="@color/black"
-                        android:textSize="20sp"
-                        tools:text="7/10" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawablePadding="5dp"
-                        android:gravity="center"
-                        android:text="Runtime:"
-                        android:textColor="#023863"
-                        android:textSize="22sp"
-                        app:drawableBottomCompat="@drawable/ic_runtime"
-
-                        />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text='@{movie.title + " m"}'
-                        android:textColor="@color/black"
-                        android:textSize="20sp"
-                        tools:text="129m" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawablePadding="5dp"
-                        android:gravity="center"
-                        android:text="Release Date:"
-                        android:textColor="#023863"
-                        android:textSize="20sp"
-                        app:drawableBottomCompat="@drawable/ic_date"
-
-                        />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:textColor="@color/black"
-                        android:textSize="20sp"
-                        tools:text="7/10" />
-                </LinearLayout>
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-        <androidx.cardview.widget.CardView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            app:cardCornerRadius="15dp"
-            app:cardElevation="12dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cardView"
+            android:orientation="horizontal"
+            android:baselineAligned="false">
 
-            >
-
-            <TextView
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:padding="20dp"
-                android:text="@{movie.title}"
-                android:textColor="@color/black"
-                android:textSize="20sp"
-                tools:text="plot is mad max" />
-        </androidx.cardview.widget.CardView>
+                android:layout_weight="1"
+                android:orientation="vertical">
 
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="5dp"
+                    android:gravity="center"
+                    android:text="Rating:"
+                    android:textColor="#023863"
+                    android:textSize="22sp"
+                    app:drawableBottomCompat="@drawable/ic_rating"
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                    />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text='@{movie.voteAverage+ " /10"}'
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    tools:text="7/10" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="5dp"
+                    android:gravity="center"
+                    android:text="Runtime:"
+                    android:textColor="#023863"
+                    android:textSize="22sp"
+                    app:drawableBottomCompat="@drawable/ic_runtime"
+
+                    />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    app:runtime="@{movie.runtime}"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    tools:text="129m" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="5dp"
+                    android:gravity="center"
+                    android:text="Release Date:"
+                    android:textColor="#023863"
+                    android:textSize="20sp"
+                    app:drawableBottomCompat="@drawable/ic_date"
+
+                        />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    app:date="@{movie}"
+                    tools:text="7/10" />
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="15dp"
+        app:cardElevation="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardView"
+        android:layout_margin="10dp"
+
+        >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@{movie.overview}"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            tools:text="plot is mad max"
+            android:padding="20dp"/>
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

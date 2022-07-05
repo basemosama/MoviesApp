@@ -1,11 +1,14 @@
 package com.basemosama.movies.utils
 
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import com.basemosama.movies.R
 import com.basemosama.movies.data.ImageType
 import com.basemosama.movies.data.Movie
 import com.bumptech.glide.Glide
+import java.text.SimpleDateFormat
+import java.util.*
 
 const val BASE_IMAGE_URL = "https://image.tmdb.org/t/p/"
 
@@ -20,7 +23,6 @@ fun setImage(view: ImageView, path: String?, type: ImageType) {
         .placeholder(R.drawable.ic_placeholder)
         .centerCrop()
         .into(view)
-
 }
 
 @BindingAdapter("image", "type", requireAll = true)
@@ -36,17 +38,24 @@ fun setMovieImage(view: ImageView, movie: Movie?, type: ImageType) {
     }
 }
 
-//@BindingAdapter("date")
-//fun setDate(view: TextView, movie: Movie?) {
-//    movie?.releaseDate?.let {
-//        val date = movie.releaseDate?.let {
-//            SimpleDateFormat("yyyy-mm-dd", Locale.US).format(it)
-//        }
-//        view.text = date
-//    }
-//}
+@BindingAdapter("date")
+fun setDate(view: TextView, movie: Movie?) {
+    movie?.releaseDate?.let {
+        val date = movie.releaseDate?.let {
+            SimpleDateFormat("yyyy-mm-dd", Locale.US).format(it)
+        }
+        view.text = date
+    }
+}
 
-
+@BindingAdapter("runtime")
+fun setRuntime(view: TextView, runtime: Long?) {
+    var text = "unavailable"
+    runtime?.let {
+        text = "$runtime min"
+    }
+    view.text = text
+}
 fun getImageWidth(type: ImageType): String = when (type) {
     ImageType.BACKDROP -> "w780"
     ImageType.LOGO -> "w92"
