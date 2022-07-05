@@ -10,12 +10,12 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.basemosama.movies.R
-import com.basemosama.movies.adapters.MovieAdapter
 import com.basemosama.movies.adapters.MovieClickListener
 import com.basemosama.movies.adapters.PagingMovieAdapter
 import com.basemosama.movies.data.Movie
-import com.basemosama.movies.data.SortType
+import com.basemosama.movies.data.SortOrder
 import com.basemosama.movies.databinding.FragmentMoviesBinding
 import com.basemosama.movies.utils.onQueryTextChanged
 import com.basemosama.movies.utils.repeatOnLifeCycle
@@ -23,16 +23,16 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MoviesFragment : Fragment(), MovieClickListener {
-    private lateinit var moviesBinding: FragmentMoviesBinding
-    private lateinit var movieAdapter: MovieAdapter
-    private lateinit var  pagingMovieAdapter: PagingMovieAdapter
+    private var moviesBinding: FragmentMoviesBinding? = null
+    private var recyclerView: RecyclerView? = null
+    private lateinit var pagingMovieAdapter: PagingMovieAdapter
     private val viewModel: MoviesViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         moviesBinding = FragmentMoviesBinding.inflate(inflater, container, false)
-        return moviesBinding.root
+        return moviesBinding!!.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -43,7 +43,8 @@ class MoviesFragment : Fragment(), MovieClickListener {
 
     private fun setupUI() {
         pagingMovieAdapter = PagingMovieAdapter(this)
-        moviesBinding.moviesRv.apply {
+        recyclerView = moviesBinding?.moviesRv
+        recyclerView?.apply {
             layoutManager = GridLayoutManager(context, 3)
             adapter = pagingMovieAdapter
         }
@@ -54,29 +55,41 @@ class MoviesFragment : Fragment(), MovieClickListener {
 
     private fun getMovies() {
 
-        repeatOnLifeCycle(pagingMovieAdapter.loadStateFlow){loadStates ->
+        repeatOnLifeCycle(viewModel.movies) { data ->
+            pagingMovieAdapter.submitData(data)
+        }
+
+
+        repeatOnLifeCycle(pagingMovieAdapter.loadStateFlow) { loadStates ->
             val state = loadStates.refresh
-            moviesBinding.loadingView.isVisible = state is LoadState.Loading
+
+            moviesBinding?.loadingView?.isVisible = state is LoadState.Loading
+
+            if (state is LoadState.Loading) {
+                recyclerView?.isVisible = false
+            }else{
+                recyclerView?.scrollToPosition(0)
+                recyclerView?.isVisible = true
+            }
 
             if (state is LoadState.Error) {
                 val errorMsg = state.error.message
                 Toast.makeText(context, errorMsg, Toast.LENGTH_LONG).show()
             }
+
         }
 
-        repeatOnLifeCycle(viewModel.movies2) { data ->
-            pagingMovieAdapter.submitData(data)
-        }
+
 
     }
 
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.main,menu)
+        inflater.inflate(R.menu.main, menu)
 
         val searchView = menu.findItem(R.id.action_search).actionView as SearchView
 
-        searchView.onQueryTextChanged(){query ->
+        searchView.onQueryTextChanged() { query ->
             viewModel.setSearchQuery(query)
         }
 
@@ -87,34 +100,59 @@ class MoviesFragment : Fragment(), MovieClickListener {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_sort_asc -> {
-                viewModel.saveSortType(SortType.ASC)
+                viewModel.saveSortType(SortOrder.BY_TITLE_ASC)
                 true
             }
             R.id.action_sort_desc -> {
-                viewModel.saveSortType(SortType.DESC)
+                viewModel.saveSortType(SortOrder.BY_TITLE_DESC)
                 true
             }
-            R.id.action_sort_default -> {
-                viewModel.saveSortType(SortType.DEFAULT)
+            R.id.action_sort_popular -> {
+                viewModel.saveSortType(SortOrder.POPULAR)
                 true
             }
+            R.id.action_sort_top_rated -> {
+                viewModel.saveSortType(SortOrder.TOP_RATED)
+                true
+            }
+            R.id.action_sort_upcoming -> {
+                viewModel.saveSortType(SortOrder.UPCOMING)
+                true
+            }
+            R.id.action_sort_now_playing -> {
+                viewModel.saveSortType(SortOrder.NOW_PLAYING)
+                true
+            }
+            R.id.action_sort_trending -> {
+                viewModel.saveSortType(SortOrder.TRENDING)
+                true
+            }
+
+
             else -> super.onOptionsItemSelected(item)
 
         }
 
 
-
-}
-
-override fun onMovieClickListener(movie: Movie?) {
-    Toast.makeText(context, movie?.title, Toast.LENGTH_SHORT).show()
-    viewModel.setMovie(movie)
-
-    movie?.id?.let {
-        val action = MoviesFragmentDirections.actionMoviesFragmentToDetailsFragment2(movie.id)
-        findNavController().navigate(action)
     }
-}
+
+
+    override fun onMovieClickListener(movie: Movie?) {
+        Toast.makeText(context, movie?.title, Toast.LENGTH_SHORT).show()
+        viewModel.setMovie(movie)
+
+        movie?.id?.let {
+            val action = MoviesFragmentDirections.actionMoviesFragmentToDetailsFragment2(it)
+            findNavController().navigate(action)
+        }
+    }
+
+
+    override fun onDestroy() {
+        super.onDestroy()
+        moviesBinding = null
+        recyclerView = null
+    }
 }
 
 

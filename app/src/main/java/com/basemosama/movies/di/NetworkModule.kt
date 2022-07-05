@@ -3,6 +3,7 @@ package com.basemosama.movies.di
 import com.basemosama.movies.BuildConfig
 import com.basemosama.movies.network.ApiService
 import com.basemosama.movies.network.utils.errorAdapter.NetworkResultCallAdapterFactory
+import com.basemosama.movies.utils.DateDeserializer
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
@@ -16,6 +17,7 @@ import okhttp3.Request
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.*
 import javax.inject.Singleton
 
 @Module
@@ -25,7 +27,10 @@ object NetworkModule {
     @Singleton
     @Provides
     fun provideGson(): Gson {
-        return GsonBuilder().setDateFormat("yyyy-mm-dd").create()
+
+        return GsonBuilder().registerTypeAdapter(Date::class.java, DateDeserializer).create()
+
+
     }
 
     // used for debugging purposes

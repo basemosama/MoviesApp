@@ -4,17 +4,16 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
 import com.basemosama.movies.data.Movie
 import com.basemosama.movies.data.MovieRepository
-import com.basemosama.movies.data.SortType
-import com.basemosama.movies.pagination.MoviePagingSource
+import com.basemosama.movies.data.SortOrder
 import com.basemosama.movies.utils.PreferenceManger
-import com.basemosama.movies.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -26,28 +25,23 @@ class MoviesViewModel @Inject constructor(
     private val searchFlow = MutableStateFlow("")
     private val sortFlow = preferenceManger.preferencesFlow
 
-    val movies2 = Pager(
-            PagingConfig(pageSize = 20)) {
-            MoviePagingSource(repository) }
-            .flow
-            .cachedIn(viewModelScope)
 
-
-    val movies: StateFlow<Resource<List<Movie>>> = sortFlow.combine(searchFlow) { sort, search ->
-        Pair(sort, search)
-    }    //For having timeouts for search query so not overload the server
-        .debounce(600)
+    //get movies based on sort oder
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val movies = sortFlow
         .distinctUntilChanged()
-        .flatMapLatest { (sort, search) ->
-            repository.getMovies(sort, search)
-        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), Resource.Loading())
+        .flatMapLatest { sort ->
+            repository.getPagingMovies(sort)
+                .cachedIn(viewModelScope)
+        }
+
 
 
     fun setSearchQuery(query: String) {
         searchFlow.value = query
     }
 
-    fun saveSortType(type: SortType) {
+    fun saveSortType(type: SortOrder) {
         viewModelScope.launch {
             preferenceManger.saveSortType(type)
         }

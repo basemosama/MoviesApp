@@ -1,36 +1,27 @@
 package com.basemosama.movies.database
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.paging.PagingSource
+import androidx.room.*
 import com.basemosama.movies.data.Movie
-import com.basemosama.movies.data.SortType
+import com.basemosama.movies.data.SortOrder
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface MovieDao {
 
-    fun getSortedMovies(sortType: SortType, searchQuery: String) : Flow<List<Movie>> =
-        when(sortType){
-            SortType.ASC ->  getSortedMoviesASC(searchQuery)
-            SortType.DESC -> getSortedMoviesDESC(searchQuery)
-            SortType.DEFAULT -> getMovies(searchQuery)
-        }
+    @Query("SELECT * FROM movies ORDER BY id DESC")
+    fun getMovies(): Flow<List<Movie>>
 
-    @Query("SELECT * FROM movies WHERE title LIKE '%' || :search || '%'" +
-            " OR originalTitle LIKE :search")
-    fun getMovies(search:String): Flow<List<Movie>>
 
-    @Query("SELECT * FROM movies WHERE title LIKE '%' || :search || '%'" +
-            " OR originalTitle LIKE :search" +
-            " ORDER BY title ASC")
-    fun getSortedMoviesASC(search:String): Flow<List<Movie>>
 
-    @Query("SELECT * FROM movies WHERE title LIKE '%' || :search || '%'" +
-            " OR originalTitle LIKE :search" +
-            " ORDER BY title DESC")
-    fun getSortedMoviesDESC(search:String): Flow<List<Movie>>
+    @Transaction
+    @Query("SELECT * FROM movies" +
+            " INNER JOIN movie_remote_key_table on movies.id = movie_remote_key_table.movieId" +
+            " WHERE searchQuery = :searchQuery AND sortOrder = :sortOrder" +
+            " ORDER BY movie_remote_key_table.id")
+    fun getPagedMovies(sortOrder: SortOrder, searchQuery: String): PagingSource<Int,Movie>
+
+
 
 
     @Query("SELECT * FROM movies WHERE id = :id")
