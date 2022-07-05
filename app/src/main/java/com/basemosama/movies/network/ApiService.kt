@@ -8,40 +8,59 @@ import retrofit2.http.Query
 
 interface ApiService {
 
-    companion object{
-//         const val BASE_URL: String = "https://api.themoviedb.org/3/"
-        //const val BASE_URL: String = "http://10.0.2.2:3000/";
-        const val BASE_URL: String = "http://192.168.1.104:3000";
-
-
+    companion object {
+        const val BASE_URL: String = "https://api.themoviedb.org/3/"
     }
 
 
-    @GET("movie/top_rated")
-    suspend fun getTopRatedMovies2(
-        @Query("language") language: String,
-        @Query("page") page: Long
-    ): PagedResponse<Movie>
 
-    @GET("movie/top_rated")
-    suspend fun getTopRatedMovies(
-        @Query("language") language: String,
-        @Query("page") page: Int
+    @GET("search/movie?include_adult=false")
+    suspend fun searchMovies(
+        @Query("page") page: Int,
+        @Query("query") query: String,
     ): NetworkResult<PagedResponse<Movie>>
 
 
-
     @GET("discover/movie")
-    suspend fun getPopularMovies(
-        @Query("language") language: String,
+    suspend fun getDiscoveredMovies(
         @Query("page") page: Int,
         @Query("sort_by") sortBy: String,
     ): NetworkResult<PagedResponse<Movie>>
 
 
-    @GET("movies?_limit=20&_sort=popularity&_order=desc")
+    @GET("trending/movie/week")
+    suspend fun getTrendingMovies(
+        @Query("page") page: Int,
+    ): NetworkResult<PagedResponse<Movie>>
+
+    @GET("movie/popular")
     suspend fun getPopularMovies(
-        @Query("_page") page: Int
-    ): NetworkResult<List<Movie>>
+        @Query("page") page: Int,
+    ): NetworkResult<PagedResponse<Movie>>
+
+    @GET("movie/upcoming")
+    suspend fun getUpcomingMovies(
+        @Query("page") page: Int,
+    ): NetworkResult<PagedResponse<Movie>>
+
+    @GET("movie/now_playing")
+    suspend fun getNowPlayingMovies(
+        @Query("page") page: Int,
+    ): NetworkResult<PagedResponse<Movie>>
+
+    @GET("discover/movie?sort_by=vote_average.desc&vote_count.gte=4000")
+    suspend fun getTopRatedMovies(
+        @Query("page") page: Int,
+    ): NetworkResult<PagedResponse<Movie>>
+
+    @GET("discover/movie?sort_by=original_title.asc")
+    suspend fun getMoviesByTitleASC(
+        @Query("page") page: Int,
+    ): NetworkResult<PagedResponse<Movie>>
+
+    @GET("discover/movie?sort_by=original_title.desc")
+    suspend fun getMoviesByTitleDESC(
+        @Query("page") page: Int,
+    ): NetworkResult<PagedResponse<Movie>>
 
 }

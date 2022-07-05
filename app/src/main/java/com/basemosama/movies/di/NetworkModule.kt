@@ -70,7 +70,7 @@ object NetworkModule {
         requestInterceptor: Interceptor
     ): OkHttpClient {
         return OkHttpClient.Builder()
-       //     .addInterceptor(requestInterceptor)
+            .addInterceptor(requestInterceptor)
             .addInterceptor(loggingInterceptor)
             .build()
     }

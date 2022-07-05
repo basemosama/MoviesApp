@@ -6,17 +6,18 @@ import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import com.basemosama.movies.data.Movie
 import com.basemosama.movies.data.MovieRepository
+import com.basemosama.movies.data.SortOrder
 import com.basemosama.movies.network.utils.NetworkResult
 
 @OptIn(ExperimentalPagingApi::class)
 class MovieRemoteMediator(
-    private val query: String = "DEFAULT_QUERY",
     private val repository: MovieRepository,
+    private val sortOrder: SortOrder,
+    private val query: String,
 
-) :
+
+    ) :
     RemoteMediator<Int, Movie>() {
-    private val searchQuery = query.ifEmpty { "DEFAULT_QUERY" }
-
 
     override suspend fun initialize(): InitializeAction {
         // Require that remote REFRESH is launched on initial load and succeeds before launching
@@ -49,8 +50,7 @@ class MovieRemoteMediator(
         }
 
 
-
-        val response = repository.getMoviesFromApi(page)
+        val response = repository.getMoviesBySortOrderFromApi(sortOrder,page)
 
         if (response is NetworkResult.Success) {
             val movies = response.data.results ?: emptyList()
@@ -58,11 +58,12 @@ class MovieRemoteMediator(
                 if (response.data.page < response.data.totalPages) response.data.page + 1 else null
 
             val remoteKeys: List<MovieRemoteKey> = movies.map { movie ->
-                MovieRemoteKey(searchQuery, movie.id, response.data.page, nextPage)
+                MovieRemoteKey(query,sortOrder,movie.id,  nextPage)
             }
 
             repository.insertAndDeleteMoviesAndRemoteKeysToDB(
-                searchQuery,
+                query,
+                sortOrder,
                 movies,
                 remoteKeys,
                 loadType
@@ -85,7 +86,7 @@ class MovieRemoteMediator(
         return state.pages.lastOrNull() { it.data.isNotEmpty() }?.data?.lastOrNull()
             ?.let { movie ->
                 // Get the remote keys of the last item retrieved
-                repository.getMovieRemoteKey(movie.id.toInt(), searchQuery)
+                repository.getMovieRemoteKey(movie.id.toInt(), query, sortOrder)
             }
 
     }

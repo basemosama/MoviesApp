@@ -5,7 +5,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.basemosama.movies.data.SortType
+import com.basemosama.movies.data.SortOrder
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
@@ -20,7 +20,7 @@ class PreferenceManger @Inject constructor(private val dataStore: DataStore<Pref
         val SORT_ORDER = stringPreferencesKey("sort_order")
     }
 
-    val preferencesFlow: Flow<SortType> = dataStore.data
+    val preferencesFlow: Flow<SortOrder> = dataStore.data
         .catch { exception ->
             if (exception is IOException) {
                 emit(emptyPreferences())
@@ -28,11 +28,11 @@ class PreferenceManger @Inject constructor(private val dataStore: DataStore<Pref
                 throw exception
             }
         }.map { preferences ->
-            SortType.valueOf(preferences[SORT_ORDER] ?: SortType.DEFAULT.name)
+            SortOrder.valueOf(preferences[SORT_ORDER] ?: SortOrder.POPULAR.name)
         }
 
 
-     suspend fun saveSortType(type: SortType) {
+     suspend fun saveSortType(type: SortOrder) {
         dataStore.edit { preference ->
             preference[SORT_ORDER] = type.name
 

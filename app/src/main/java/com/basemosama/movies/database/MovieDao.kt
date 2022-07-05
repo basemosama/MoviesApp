@@ -3,16 +3,11 @@ package com.basemosama.movies.database
 import androidx.paging.PagingSource
 import androidx.room.*
 import com.basemosama.movies.data.Movie
-import com.basemosama.movies.data.SortType
+import com.basemosama.movies.data.SortOrder
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface MovieDao {
-
-    fun getPagedMovies(sortType: SortType, searchQuery: String) : PagingSource<Int,Movie> =
-        getDefaultPagedMovies(searchQuery.ifEmpty { "DEFAULT_QUERY" })
-
-
 
     @Query("SELECT * FROM movies ORDER BY id DESC")
     fun getMovies(): Flow<List<Movie>>
@@ -22,9 +17,9 @@ interface MovieDao {
     @Transaction
     @Query("SELECT * FROM movies" +
             " INNER JOIN movie_remote_key_table on movies.id = movie_remote_key_table.movieId" +
-            " WHERE searchQuery = :search" +
+            " WHERE searchQuery = :searchQuery AND sortOrder = :sortOrder" +
             " ORDER BY movie_remote_key_table.id")
-    fun getDefaultPagedMovies(search:String): PagingSource<Int,Movie>
+    fun getPagedMovies(sortOrder: SortOrder, searchQuery: String): PagingSource<Int,Movie>
 
 
 

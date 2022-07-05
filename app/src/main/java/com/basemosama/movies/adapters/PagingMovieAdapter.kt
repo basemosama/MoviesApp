@@ -15,13 +15,9 @@ class PagingMovieAdapter(private val movieClickListener: MovieClickListener)
     companion object{
         val diffUtil = object : DiffUtil.ItemCallback<Movie>() {
             override fun areItemsTheSame(oldItem: Movie, newItem: Movie): Boolean {
-               // Timber.d("areItemsTheSame: oldItem : ${oldItem.id} (${oldItem.title}  " +
-                       // " newItem : ${newItem.id} (${newItem.title} are: ${oldItem.id == newItem.id}")
                 return oldItem.id == newItem.id
             }
             override fun areContentsTheSame(oldItem: Movie, newItem: Movie): Boolean {
-           //     Timber.d("areContentsTheSame: oldItem : ${oldItem.id} (${oldItem.title}  " +
-                   //     " newItem : ${newItem.id} (${newItem.title} are: ${oldItem.id == newItem.id}")
 
                 return oldItem == newItem
             }

@@ -31,7 +31,7 @@ data class Movie(
     var popularity: Double?,
     @SerializedName("genre_ids") var genreIds: LongArray?,
     @SerializedName("release_date")
-    var releaseDate: Date?,
+    var releaseDate: Date?
 
 
 

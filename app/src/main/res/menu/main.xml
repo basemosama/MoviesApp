@@ -9,15 +9,28 @@
         android:orderInCategory="100"
         >
 
-        <menu>
+        <menu >
+            <item android:id="@+id/action_sort_popular"
+                android:title="@string/order_movies_by_popular_movies"
+                />
+
+            <item android:id="@+id/action_sort_top_rated"
+                android:title="@string/order_movies_by_top_rated_movies" />
+
+            <item android:id="@+id/action_sort_upcoming"
+                android:title="@string/order_movies_by_upcoming_movies" />
+
+            <item android:id="@+id/action_sort_trending"
+                android:title="@string/order_movies_by_trending_movies" />
+
+            <item android:id="@+id/action_sort_now_playing"
+                android:title="@string/order_movies_by_now_playing_movies" />
+
             <item android:id="@+id/action_sort_asc"
                 android:title="@string/order_movies_by_title_asc" />
 
             <item android:id="@+id/action_sort_desc"
                 android:title="@string/order_movies_by_title_desc" />
-
-            <item android:id="@+id/action_sort_default"
-                android:title="@string/default_order" />
 
         </menu>
 
@@ -30,5 +43,6 @@
         android:icon="@drawable/ic_search"
         app:actionViewClass="android.widget.SearchView"
         android:orderInCategory="200"
+        android:visible="false"
         />
 </menu>
