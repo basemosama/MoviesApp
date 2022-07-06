@@ -3,7 +3,7 @@ package com.basemosama.movies.database
 import androidx.paging.LoadType
 import androidx.room.*
 import com.basemosama.movies.data.Movie
-import com.basemosama.movies.data.SortOrder
+import com.basemosama.movies.data.model.SortOrder
 import com.basemosama.movies.pagination.MovieRemoteKey
 
 @Dao

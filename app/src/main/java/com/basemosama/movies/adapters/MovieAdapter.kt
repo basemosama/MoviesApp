@@ -11,7 +11,6 @@ import com.basemosama.movies.databinding.ItemMovieBinding
 
 class MovieAdapter(private val movieClickListener: MovieClickListener) : ListAdapter<Movie?, MovieAdapter.MovieViewHolder>(diffUtil) {
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
         return MovieViewHolder.from(parent,movieClickListener)
     }

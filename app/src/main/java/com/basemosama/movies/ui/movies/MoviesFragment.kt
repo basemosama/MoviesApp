@@ -8,6 +8,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -15,7 +16,7 @@ import com.basemosama.movies.R
 import com.basemosama.movies.adapters.MovieClickListener
 import com.basemosama.movies.adapters.PagingMovieAdapter
 import com.basemosama.movies.data.Movie
-import com.basemosama.movies.data.SortOrder
+import com.basemosama.movies.data.model.SortOrder
 import com.basemosama.movies.databinding.FragmentMoviesBinding
 import com.basemosama.movies.utils.onQueryTextChanged
 import com.basemosama.movies.utils.repeatOnLifeCycle
@@ -27,6 +28,7 @@ class MoviesFragment : Fragment(), MovieClickListener {
     private var recyclerView: RecyclerView? = null
     private lateinit var pagingMovieAdapter: PagingMovieAdapter
     private val viewModel: MoviesViewModel by activityViewModels()
+    private val args: MoviesFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -42,6 +44,9 @@ class MoviesFragment : Fragment(), MovieClickListener {
     }
 
     private fun setupUI() {
+        val sortOrder = args.sortOrder
+        //TO BE DECIDED IF I SHOULD SAVE SORT ORDER IN DATA STORE
+        viewModel.saveSortType(sortOrder)
         pagingMovieAdapter = PagingMovieAdapter(this)
         recyclerView = moviesBinding?.moviesRv
         recyclerView?.apply {
@@ -138,9 +143,7 @@ class MoviesFragment : Fragment(), MovieClickListener {
 
 
     override fun onMovieClickListener(movie: Movie?) {
-        Toast.makeText(context, movie?.title, Toast.LENGTH_SHORT).show()
-        viewModel.setMovie(movie)
-
+       // Toast.makeText(context, movie?.title, Toast.LENGTH_SHORT).show()
         movie?.id?.let {
             val action = MoviesFragmentDirections.actionMoviesFragmentToDetailsFragment2(it)
             findNavController().navigate(action)

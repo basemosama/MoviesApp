@@ -3,7 +3,7 @@ package com.basemosama.movies.database
 import androidx.paging.PagingSource
 import androidx.room.*
 import com.basemosama.movies.data.Movie
-import com.basemosama.movies.data.SortOrder
+import com.basemosama.movies.data.model.SortOrder
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -11,8 +11,6 @@ interface MovieDao {
 
     @Query("SELECT * FROM movies ORDER BY id DESC")
     fun getMovies(): Flow<List<Movie>>
-
-
 
     @Transaction
     @Query("SELECT * FROM movies" +
@@ -25,7 +23,7 @@ interface MovieDao {
 
 
     @Query("SELECT * FROM movies WHERE id = :id")
-    fun getMovieById(id: Int): Flow<Movie>
+    fun getMovieById(id: Long): Flow<Movie>
 
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

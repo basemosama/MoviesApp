@@ -6,7 +6,7 @@ import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import com.basemosama.movies.data.Movie
 import com.basemosama.movies.data.MovieRepository
-import com.basemosama.movies.data.SortOrder
+import com.basemosama.movies.data.model.SortOrder
 import com.basemosama.movies.network.utils.NetworkResult
 
 @OptIn(ExperimentalPagingApi::class)

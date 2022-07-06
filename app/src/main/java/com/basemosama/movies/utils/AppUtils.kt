@@ -5,6 +5,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.basemosama.movies.data.Movie
+import com.basemosama.movies.data.model.ExploreItem
+import com.basemosama.movies.data.model.SortOrder
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
@@ -52,4 +55,39 @@ object DateDeserializer : JsonDeserializer<Date> {
         }
     }
 
+}
+
+
+fun getExploreItems() : List<ExploreItem>{
+    return listOf(
+        ExploreItem(
+            "Popular",
+            SortOrder.POPULAR,
+            ArrayList<Movie>()
+        ),   ExploreItem(
+            "Top Rated",
+            SortOrder.TOP_RATED,
+            ArrayList<Movie>()
+        ),   ExploreItem(
+            "Upcoming",
+            SortOrder.UPCOMING,
+            ArrayList<Movie>()
+        ),   ExploreItem(
+            "Now Playing",
+            SortOrder.NOW_PLAYING,
+            ArrayList<Movie>()
+        ),   ExploreItem(
+            "Trending",
+            SortOrder.TRENDING,
+            ArrayList<Movie>()
+        ),   ExploreItem(
+            "Sorted By Title ASC",
+            SortOrder.BY_TITLE_ASC,
+            ArrayList<Movie>()
+        ),   ExploreItem(
+            "Sorted By Title DESC",
+            SortOrder.BY_TITLE_DESC,
+            ArrayList<Movie>()
+        )
+    )
 }

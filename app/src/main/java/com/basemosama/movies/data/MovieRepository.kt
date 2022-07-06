@@ -1,6 +1,7 @@
 package com.basemosama.movies.data
 
 import androidx.paging.*
+import com.basemosama.movies.data.model.SortOrder
 import com.basemosama.movies.data.network.PagedResponse
 import com.basemosama.movies.database.MovieDao
 import com.basemosama.movies.database.MovieRemoteKeyDao
@@ -9,6 +10,7 @@ import com.basemosama.movies.network.networkBoundResource
 import com.basemosama.movies.network.utils.NetworkResult
 import com.basemosama.movies.pagination.MovieRemoteKey
 import com.basemosama.movies.pagination.MovieRemoteMediator
+import com.basemosama.movies.utils.PreferenceManger
 import com.basemosama.movies.utils.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -19,7 +21,8 @@ import javax.inject.Inject
 class MovieRepository @Inject constructor(
     private val apiClient: ApiService,
     private val movieDao: MovieDao,
-    private val movieRemoteKeyDao: MovieRemoteKeyDao
+    private val movieRemoteKeyDao: MovieRemoteKeyDao,
+    private val preferenceManger: PreferenceManger
 ) {
 
     companion object {
@@ -68,6 +71,7 @@ class MovieRepository @Inject constructor(
 
     fun getMoviesFromDB(): Flow<List<Movie>> = movieDao.getMovies()
 
+    fun getMovieById(id: Long): Flow<Movie> = movieDao.getMovieById(id)
 
     suspend fun deleteMovies() = withContext(Dispatchers.IO) {
         movieDao.deleteAllMovies()
@@ -77,13 +81,12 @@ class MovieRepository @Inject constructor(
         movieDao.insertMovies(movies)
     }
 
-
-    fun getMovies(sortType: SortOrder, search: String): Flow<Resource<List<Movie>>> =
+    fun getMovies(sortType: SortOrder, page: Int): Flow<Resource<List<Movie>>> =
         networkBoundResource(
             query = {
                 movieDao.getMovies()
             },
-            fetch = { getMoviesBySortOrderFromApi(sortType, 1) },
+            fetch = { getMoviesBySortOrderFromApi(sortType, page) },
             saveFetchResult = { response ->
                 run {
                     response.results?.let {
