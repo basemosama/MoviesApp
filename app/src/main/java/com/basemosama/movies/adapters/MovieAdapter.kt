@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.basemosama.movies.data.Movie
-import com.basemosama.movies.databinding.ItemMovieBinding
+import com.basemosama.movies.databinding.ItemExploreMovieBinding
 
 class MovieAdapter(private val movieClickListener: MovieClickListener) : ListAdapter<Movie?, MovieAdapter.MovieViewHolder>(diffUtil) {
 
@@ -22,7 +22,7 @@ class MovieAdapter(private val movieClickListener: MovieClickListener) : ListAda
     }
 
 
-    class MovieViewHolder(private val movieBinding: ItemMovieBinding,private val movieClickListener: MovieClickListener) :
+    class MovieViewHolder(private val movieBinding: ItemExploreMovieBinding,private val movieClickListener: MovieClickListener) :
         RecyclerView.ViewHolder(movieBinding.root) , View.OnClickListener{
 
         init {
@@ -36,7 +36,7 @@ class MovieAdapter(private val movieClickListener: MovieClickListener) : ListAda
         companion object {
             fun from(parent: ViewGroup, movieClickListener: MovieClickListener): MovieViewHolder {
                 val inflater = LayoutInflater.from(parent.context)
-                val movieBinding = ItemMovieBinding.inflate(inflater, parent, false)
+                val movieBinding = ItemExploreMovieBinding.inflate(inflater, parent, false)
                 return MovieViewHolder(movieBinding,movieClickListener)
             }
         }

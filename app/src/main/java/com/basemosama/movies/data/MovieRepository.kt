@@ -2,7 +2,10 @@ package com.basemosama.movies.data
 
 import androidx.paging.*
 import com.basemosama.movies.data.model.SortOrder
+import com.basemosama.movies.data.model.explore.ExploreInfo
+import com.basemosama.movies.data.model.explore.ExploreMovieCrossRef
 import com.basemosama.movies.data.network.PagedResponse
+import com.basemosama.movies.database.ExploreDao
 import com.basemosama.movies.database.MovieDao
 import com.basemosama.movies.database.MovieRemoteKeyDao
 import com.basemosama.movies.network.ApiService
@@ -14,7 +17,9 @@ import com.basemosama.movies.utils.PreferenceManger
 import com.basemosama.movies.utils.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
+import java.util.*
 import javax.inject.Inject
 
 
@@ -22,6 +27,7 @@ class MovieRepository @Inject constructor(
     private val apiClient: ApiService,
     private val movieDao: MovieDao,
     private val movieRemoteKeyDao: MovieRemoteKeyDao,
+    private val exploreDao: ExploreDao,
     private val preferenceManger: PreferenceManger
 ) {
 
@@ -81,6 +87,47 @@ class MovieRepository @Inject constructor(
         movieDao.insertMovies(movies)
     }
 
+    suspend fun handleExplore() {
+     //exploreDao.insertAll(getExploreData())
+        val exploreList = exploreDao.getExploreInfo().first()
+
+        val currentDay = Calendar.getInstance().get(Calendar.DAY_OF_YEAR)
+        val lastDay = preferenceManger.getExploreLastUpdateDay()
+        val shouldFetch = currentDay != lastDay
+
+        if (shouldFetch) {
+            for (item in exploreList) {
+                val isSuccess = getAndSaveExploreMovies(item)
+                if (isSuccess) preferenceManger.saveExploreCurrentUpdateDay(currentDay)
+            }
+        }
+    }
+
+
+    private suspend fun getAndSaveExploreMovies(explore: ExploreInfo): Boolean {
+        val response = getMoviesBySortOrderFromApi(explore.sortOrder, 1)
+        if (response is NetworkResult.Success) {
+            val movies = response.data.results ?: emptyList()
+            var order =0L
+            val exploreMovieCrossRef = movies.map { movie ->
+                ExploreMovieCrossRef(
+                    explore.exploreId,
+                    movie.id,
+                    order++
+                )
+            }
+
+            withContext(Dispatchers.IO){
+                movieDao.insertMovies(movies)
+                exploreDao.insertExploreMovieCrossRef(exploreMovieCrossRef)
+            }
+
+            return true
+        }
+        return false
+
+    }
+
     fun getMovies(sortType: SortOrder, page: Int): Flow<Resource<List<Movie>>> =
         networkBoundResource(
             query = {
@@ -100,6 +147,8 @@ class MovieRepository @Inject constructor(
             }
 
         )
+
+
 
 
     suspend fun insertAndDeleteMoviesAndRemoteKeysToDB(
@@ -122,4 +171,7 @@ class MovieRepository @Inject constructor(
     suspend fun getMovieRemoteKey(itemId: Int, query: String, sort: SortOrder): MovieRemoteKey? {
         return movieRemoteKeyDao.getRemoteKey(itemId, query, sort)
     }
+
+
+    fun getExploreItems():Flow<Map<ExploreInfo,List<Movie>>> = exploreDao.getExploreMap()
 }

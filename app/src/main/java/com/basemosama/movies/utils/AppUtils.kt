@@ -5,9 +5,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.basemosama.movies.data.Movie
-import com.basemosama.movies.data.model.ExploreItem
 import com.basemosama.movies.data.model.SortOrder
+import com.basemosama.movies.data.model.explore.ExploreInfo
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
@@ -19,8 +18,8 @@ import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
-inline fun SearchView.onQueryTextChanged(crossinline listener:(String) -> Unit){
-    this.setOnQueryTextListener(object :SearchView.OnQueryTextListener{
+inline fun SearchView.onQueryTextChanged(crossinline listener: (String) -> Unit) {
+    this.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
         override fun onQueryTextSubmit(query: String?): Boolean {
             return true
         }
@@ -58,36 +57,36 @@ object DateDeserializer : JsonDeserializer<Date> {
 }
 
 
-fun getExploreItems() : List<ExploreItem>{
+fun getExploreData(): List<ExploreInfo> {
     return listOf(
-        ExploreItem(
+        ExploreInfo(
+            1,
             "Popular",
-            SortOrder.POPULAR,
-            ArrayList<Movie>()
-        ),   ExploreItem(
+            SortOrder.POPULAR
+        ), ExploreInfo(
+            2,
             "Top Rated",
-            SortOrder.TOP_RATED,
-            ArrayList<Movie>()
-        ),   ExploreItem(
+            SortOrder.TOP_RATED
+        ), ExploreInfo(
+            3,
             "Upcoming",
-            SortOrder.UPCOMING,
-            ArrayList<Movie>()
-        ),   ExploreItem(
+            SortOrder.UPCOMING
+        ), ExploreInfo(
+            4,
             "Now Playing",
-            SortOrder.NOW_PLAYING,
-            ArrayList<Movie>()
-        ),   ExploreItem(
+            SortOrder.NOW_PLAYING
+        ), ExploreInfo(
+            5,
             "Trending",
-            SortOrder.TRENDING,
-            ArrayList<Movie>()
-        ),   ExploreItem(
+            SortOrder.TRENDING
+        ), ExploreInfo(
+            6,
             "Sorted By Title ASC",
-            SortOrder.BY_TITLE_ASC,
-            ArrayList<Movie>()
-        ),   ExploreItem(
+            SortOrder.BY_TITLE_ASC
+        ), ExploreInfo(
+            7,
             "Sorted By Title DESC",
-            SortOrder.BY_TITLE_DESC,
-            ArrayList<Movie>()
+            SortOrder.BY_TITLE_DESC
         )
     )
 }

@@ -18,7 +18,7 @@ interface MovieRemoteKeyDao {
 
     @Transaction
     @Query(
-        "DELETE FROM movies WHERE id IN ( SELECT movieId FROM movie_remote_key_table " +
+        "DELETE FROM movies WHERE movieId IN ( SELECT movieId FROM movie_remote_key_table " +
                 "WHERE searchQuery = :query AND sortOrder = :sortOrder)"
     )
     suspend fun deleteMoviesByRemoteKeys(query: String, sortOrder: SortOrder)

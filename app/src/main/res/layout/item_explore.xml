@@ -6,7 +6,7 @@
     <data>
         <variable
             name="explore"
-            type="com.basemosama.movies.data.model.ExploreItem" />
+            type="com.basemosama.movies.data.model.explore.ExploreInfo" />
     </data>
 <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"

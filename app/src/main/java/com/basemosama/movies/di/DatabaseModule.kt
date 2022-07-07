@@ -3,6 +3,7 @@ package com.basemosama.movies.di
 import android.content.Context
 import androidx.room.Room
 import com.basemosama.movies.database.AppDatabase
+import com.basemosama.movies.database.ExploreDao
 import com.basemosama.movies.database.MovieDao
 import com.basemosama.movies.database.MovieRemoteKeyDao
 import dagger.Module
@@ -25,6 +26,7 @@ object DatabaseModule {
             context,
             AppDatabase::class.java,
             DATABASE_NAME)
+            .createFromAsset("movies.db")
             .fallbackToDestructiveMigration()
             .build()
     }
@@ -39,6 +41,13 @@ object DatabaseModule {
     @Provides
     fun provideRemoteMovieKeyDao(database: AppDatabase): MovieRemoteKeyDao {
         return database.movieRemoteKeyDao()
+    }
+
+
+    @Singleton
+    @Provides
+    fun provideExploreDao(database: AppDatabase): ExploreDao {
+        return database.exploreDao()
     }
 }
 

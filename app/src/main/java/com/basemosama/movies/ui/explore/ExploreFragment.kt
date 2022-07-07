@@ -11,9 +11,10 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.basemosama.movies.adapters.ExploreAdapter
 import com.basemosama.movies.data.Movie
-import com.basemosama.movies.data.model.ExploreItem
+import com.basemosama.movies.data.model.explore.ExploreInfo
+import com.basemosama.movies.data.model.explore.ExploreItem
 import com.basemosama.movies.databinding.FragmentExploreBinding
-import com.basemosama.movies.utils.getExploreItems
+import com.basemosama.movies.utils.repeatOnLifeCycle
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -34,11 +35,11 @@ class ExploreFragment : Fragment(), ExploreAdapter.ItemClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        getExploreItems()
     }
 
     private fun setupUI() {
-        exploreAdapter = ExploreAdapter(this,viewModel,this)
-        exploreAdapter.submitList(getExploreItems())
+        exploreAdapter = ExploreAdapter(this)
         exploreBinding.exploreRv.apply {
             layoutManager = LinearLayoutManager(context)
             setHasFixedSize(true)
@@ -46,10 +47,21 @@ class ExploreFragment : Fragment(), ExploreAdapter.ItemClickListener {
         }
     }
 
-    override fun onMoreClickListener(exploreItem: ExploreItem?) {
+    private fun getExploreItems() {
+        repeatOnLifeCycle(viewModel.exploreItems){
+           val exploreItems= it.map { (explore,movies) ->
+                ExploreItem(explore,movies)
+            }.toList()
+
+            exploreAdapter.submitList(exploreItems)
+            }
+    }
+
+
+    override fun onMoreClickListener(info: ExploreInfo?) {
         Toast.makeText(context, "More Clicked", Toast.LENGTH_SHORT).show()
 
-        exploreItem?.sortOrder?.let { sort->
+        info?.sortOrder?.let { sort->
             val action = ExploreFragmentDirections.actionExploreFragmentToMoviesFragment(sort)
             findNavController().navigate(action)
         }

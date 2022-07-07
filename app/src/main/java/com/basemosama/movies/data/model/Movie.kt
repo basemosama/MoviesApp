@@ -1,5 +1,6 @@
 package com.basemosama.movies.data
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
@@ -9,6 +10,7 @@ import java.util.*
 @Entity(tableName = "movies")
 data class Movie(
     @PrimaryKey
+    @ColumnInfo(name = "movieId")
     var id:Long,
     var title: String,
     @SerializedName("original_title")

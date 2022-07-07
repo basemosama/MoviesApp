@@ -3,32 +3,28 @@ package com.basemosama.movies.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.basemosama.movies.data.Movie
-import com.basemosama.movies.data.model.ExploreItem
+import com.basemosama.movies.data.model.explore.ExploreInfo
+import com.basemosama.movies.data.model.explore.ExploreItem
 import com.basemosama.movies.databinding.ItemExploreBinding
-import com.basemosama.movies.ui.explore.ExploreViewModel
-import com.basemosama.movies.utils.repeatOnLifeCycle
-import timber.log.Timber
 
-class ExploreAdapter(private val itemClickListener: ItemClickListener,
-                     private val viewModel :ExploreViewModel,
-                     private val fragment:Fragment) : ListAdapter<ExploreItem,
+class ExploreAdapter(private val itemClickListener: ItemClickListener) : ListAdapter<ExploreItem,
         ExploreAdapter.ExploreViewHolder>(DIFF_CALLBACK) {
 
+
     interface ItemClickListener {
-        fun onMoreClickListener(item: ExploreItem?)
+        fun onMoreClickListener(item: ExploreInfo?)
 
         fun onMovieClickListener(item: Movie?)
 
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExploreViewHolder {
-        return ExploreViewHolder.from(parent,itemClickListener,viewModel,fragment)
+        return ExploreViewHolder.from(parent,itemClickListener)
     }
 
     override fun onBindViewHolder(holder: ExploreViewHolder, position: Int) {
@@ -39,12 +35,10 @@ class ExploreAdapter(private val itemClickListener: ItemClickListener,
     class ExploreViewHolder(
         private val exploreBinding: ItemExploreBinding,
         private val itemClickListener: ItemClickListener,
-        private val viewModel :ExploreViewModel,
-        private val fragment: Fragment
     ) :
         RecyclerView.ViewHolder(exploreBinding.root), MovieClickListener, View.OnClickListener {
         private var recyclerView : RecyclerView = exploreBinding.exploreMoviesRv
-        private var pagingAdapter : PagingMovieAdapter = PagingMovieAdapter(this)
+        private var moviesAdapter : MovieAdapter = MovieAdapter(this)
 
         init {
             exploreBinding.moreBtn.setOnClickListener(this)
@@ -52,20 +46,13 @@ class ExploreAdapter(private val itemClickListener: ItemClickListener,
                 recyclerView.layoutManager =
                     LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                 setRecycledViewPool(RecyclerView.RecycledViewPool())
-                recyclerView.adapter = pagingAdapter
+                recyclerView.adapter = moviesAdapter
             }
         }
 
         fun bind(item: ExploreItem) {
-            exploreBinding.explore = item
-            Timber.d("MOVIES BINDING :${item.title}")
-
-            fragment.repeatOnLifeCycle(viewModel.getMovies(item.sortOrder)) {
-                Timber.d("MOVIES BINDING ADAPTER :${item.title}")
-
-                pagingAdapter.submitData(it)
-            }
-
+            exploreBinding.explore = item.explore
+            if (item.movies !=null) moviesAdapter.submitList(item.movies)
         }
         override fun onClick(p0: View?) {
             val item = exploreBinding.explore
@@ -77,10 +64,10 @@ class ExploreAdapter(private val itemClickListener: ItemClickListener,
         }
 
         companion object {
-            fun from(parent: ViewGroup,itemClickListener: ItemClickListener, viewModel: ExploreViewModel,fragment: Fragment): ExploreViewHolder {
+            fun from(parent: ViewGroup,itemClickListener: ItemClickListener): ExploreViewHolder {
                 val inflater = LayoutInflater.from(parent.context)
                 val itemExploreBinding = ItemExploreBinding.inflate(inflater, parent, false)
-                return ExploreViewHolder(itemExploreBinding,itemClickListener,viewModel,fragment)
+                return ExploreViewHolder(itemExploreBinding,itemClickListener)
             }
         }
 
@@ -93,11 +80,11 @@ class ExploreAdapter(private val itemClickListener: ItemClickListener,
     companion object {
         val DIFF_CALLBACK = object : DiffUtil.ItemCallback<ExploreItem>() {
             override fun areItemsTheSame(oldItem: ExploreItem, newItem: ExploreItem): Boolean {
-                return oldItem.title == newItem.title
+                return oldItem.explore.exploreId == newItem.explore.exploreId
             }
 
             override fun areContentsTheSame(oldItem: ExploreItem, newItem: ExploreItem): Boolean {
-                return oldItem == newItem
+                return oldItem.explore == newItem.explore
             }
         }
 

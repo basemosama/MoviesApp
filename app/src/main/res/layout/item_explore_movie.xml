@@ -9,8 +9,8 @@
         <import type="com.basemosama.movies.data.ImageType"/>
     </data>
 <androidx.cardview.widget.CardView
-    android:layout_width="match_parent"
-    android:layout_height="170dp"
+    android:layout_width="130dp"
+    android:layout_height="180dp"
     app:cardCornerRadius="15dp"
     app:cardElevation="10dp"
     android:layout_margin="10dp"
