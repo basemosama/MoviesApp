@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.basemosama.movies.data.Movie
 import com.basemosama.movies.databinding.ItemExploreMovieBinding
 
+//To use in explore fragment
 class MovieAdapter(private val movieClickListener: MovieClickListener) : ListAdapter<Movie?, MovieAdapter.MovieViewHolder>(diffUtil) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {

@@ -1,24 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<layout    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    >
-    <data>
-
-    </data>
-
-<androidx.constraintlayout.widget.ConstraintLayout
-
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.explore.ExploreFragment">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
 
-    <androidx.recyclerview.widget.RecyclerView android:id="@+id/explore_rv"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-     />
+        android:fitsSystemWindows="true"
+        tools:context=".MainActivity"
+        android:background="@drawable/background_gradient"
+        >
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="550dp"
+            android:fitsSystemWindows="true"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+            <com.google.android.material.appbar.CollapsingToolbarLayout
+                android:id="@+id/toolbar_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fitsSystemWindows="true"
+                app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed"
+                app:toolbarId="@id/toolbar">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layout_collapseMode="parallax"
+                    >
+
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/pager"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layout_collapseMode="parallax"
+                    />
+                <com.tbuonomo.viewpagerdotsindicator.DotsIndicator
+                    android:id="@+id/dots_indicator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:dotsColor="@color/material_white"
+                    app:dotsCornerRadius="8dp"
+                    app:dotsSize="16dp"
+                    app:dotsSpacing="4dp"
+                    app:dotsWidthFactor="2.5"
+                    app:selectedDotColor="@color/md_blue_200"
+                    app:progressMode="true"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="50dp"
+                    android:layout_centerHorizontal="true"
+                    />
+
+                </RelativeLayout>
+
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    app:layout_collapseMode="none"
+                    app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
+        </com.google.android.material.appbar.AppBarLayout>
+
+
+        <!-- define layout for main content here with NestedScrolView-->
+
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/explore_rv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                tools:listitem="@layout/item_explore"
+                />
+
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </layout>

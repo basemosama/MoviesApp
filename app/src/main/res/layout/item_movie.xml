@@ -22,7 +22,7 @@
         android:layout_height="match_parent"
         tools:src="@drawable/madmax"
         app:image="@{movie.posterPath}"
-        app:type="@{ImageType.POSTER}"
+        app:type="@{ImageType.POSTER_MEDIUM}"
         android:contentDescription="@string/movie_poster"
         android:layout_gravity="center"
         />

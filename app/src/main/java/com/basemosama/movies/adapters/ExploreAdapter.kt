@@ -46,6 +46,7 @@ class ExploreAdapter(private val itemClickListener: ItemClickListener) : ListAda
                 recyclerView.layoutManager =
                     LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                 setRecycledViewPool(RecyclerView.RecycledViewPool())
+                isNestedScrollingEnabled = false
                 recyclerView.adapter = moviesAdapter
             }
         }

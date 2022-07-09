@@ -17,7 +17,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:textColor="#3B436E"
+        android:textColor="#FFFFFF"
         android:textSize="22sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -27,15 +27,15 @@
     <Button android:id="@+id/more_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="More"
-        android:textColor="#C85B80"
+        android:text="@string/more_text"
+        android:textColor="#FF3177"
         android:textSize="15sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.884"
         app:layout_constraintStart_toEndOf="@+id/name_tv"
         app:layout_constraintTop_toTopOf="parent"
         style="?android:attr/borderlessButtonStyle"
-        />
+       />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/explore_movies_rv"
@@ -47,6 +47,7 @@
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
         android:layout_marginTop="5dp"
+        tools:listitem="@layout/item_explore_movie"
         />
 
 

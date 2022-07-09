@@ -72,6 +72,9 @@ dependencies {
     def paging_version = "3.2.0-alpha01"
     implementation("androidx.paging:paging-runtime:$paging_version")
 
+
+
+
     //retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
@@ -104,6 +107,7 @@ dependencies {
     //DataStore
     implementation("androidx.datastore:datastore-preferences:1.0.0")
 
+    implementation("com.tbuonomo:dotsindicator:4.3")
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
