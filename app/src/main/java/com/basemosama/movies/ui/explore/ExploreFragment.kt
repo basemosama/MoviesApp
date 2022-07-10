@@ -13,7 +13,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
-import com.basemosama.movies.R
 import com.basemosama.movies.adapters.ExploreAdapter
 import com.basemosama.movies.adapters.SliderAdapter
 import com.basemosama.movies.data.Movie
@@ -64,7 +63,7 @@ class ExploreFragment : Fragment(), ExploreAdapter.ItemClickListener,
 
     private fun setUpToolbar() {
         exploreBinding.toolbar.apply {
-            inflateMenu(R.menu.main)
+          //  inflateMenu(R.menu.main)
             //title = "Explore"
         }
 
@@ -96,7 +95,6 @@ class ExploreFragment : Fragment(), ExploreAdapter.ItemClickListener,
     }
 
 
-
     private fun getExploreItems() {
         repeatOnLifeCycle(viewModel.exploreItems) {
             val exploreItems = it.map { (explore, movies) ->
@@ -117,13 +115,14 @@ class ExploreFragment : Fragment(), ExploreAdapter.ItemClickListener,
     }
 
 
-
-
     override fun onMoreClickListener(item: ExploreInfo?) {
         Toast.makeText(context, "More Clicked", Toast.LENGTH_SHORT).show()
 
-        item?.sortOrder?.let { sort ->
-            val action = ExploreFragmentDirections.actionExploreFragmentToMoviesFragment(sort)
+        item?.let { item ->
+            val action = ExploreFragmentDirections.actionExploreFragmentToMoviesFragment(
+                item.title,
+                item.sortOrder
+            )
             findNavController().navigate(action)
         }
 

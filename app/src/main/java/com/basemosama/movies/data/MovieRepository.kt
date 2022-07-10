@@ -87,46 +87,45 @@ class MovieRepository @Inject constructor(
         movieDao.insertMovies(movies)
     }
 
-    suspend fun handleExplore() {
-     //exploreDao.insertAll(getExploreData())
-        val exploreList = exploreDao.getExploreInfo().first()
 
+    suspend fun shouldFetchExploreItems(): Boolean {
         val currentDay = Calendar.getInstance().get(Calendar.DAY_OF_YEAR)
         val lastDay = preferenceManger.getExploreLastUpdateDay()
         val shouldFetch = currentDay != lastDay
+        return shouldFetch
+    }
+
+
+    suspend fun handleExplore() {
+        //exploreDao.insertAll(getExploreData())
+        val exploreList = exploreDao.getExploreInfo().first()
+        val shouldFetch = shouldFetchExploreItems()
+        var order = 0L
 
         if (shouldFetch) {
-            for (item in exploreList) {
-                val isSuccess = getAndSaveExploreMovies(item)
-                if (isSuccess) preferenceManger.saveExploreCurrentUpdateDay(currentDay)
+            for (explore in exploreList) {
+                val response = getMoviesBySortOrderFromApi(explore.sortOrder, 1)
+                if (response is NetworkResult.Success) {
+                    val movies = response.data.results ?: emptyList()
+                    val exploreMovieCrossRef = movies.map { movie ->
+                        ExploreMovieCrossRef(
+                            explore.exploreId,
+                            movie.id,
+                            order++
+                        )
+                    }
+                    withContext(Dispatchers.IO) {
+                        movieDao.insertMovies(movies)
+                        exploreDao.insertExploreMovieCrossRef(exploreMovieCrossRef)
+
+                        val currentDay = Calendar.getInstance().get(Calendar.DAY_OF_YEAR)
+                        preferenceManger.saveExploreCurrentUpdateDay(currentDay)
+                    }
+                }
             }
         }
     }
 
-
-    private suspend fun getAndSaveExploreMovies(explore: ExploreInfo): Boolean {
-        val response = getMoviesBySortOrderFromApi(explore.sortOrder, 1)
-        if (response is NetworkResult.Success) {
-            val movies = response.data.results ?: emptyList()
-            var order =0L
-            val exploreMovieCrossRef = movies.map { movie ->
-                ExploreMovieCrossRef(
-                    explore.exploreId,
-                    movie.id,
-                    order++
-                )
-            }
-
-            withContext(Dispatchers.IO){
-                movieDao.insertMovies(movies)
-                exploreDao.insertExploreMovieCrossRef(exploreMovieCrossRef)
-            }
-
-            return true
-        }
-        return false
-
-    }
 
     fun getMovies(sortType: SortOrder, page: Int): Flow<Resource<List<Movie>>> =
         networkBoundResource(
@@ -147,8 +146,6 @@ class MovieRepository @Inject constructor(
             }
 
         )
-
-
 
 
     suspend fun insertAndDeleteMoviesAndRemoteKeysToDB(
@@ -173,5 +170,5 @@ class MovieRepository @Inject constructor(
     }
 
 
-    fun getExploreItems():Flow<Map<ExploreInfo,List<Movie>>> = exploreDao.getExploreMap()
+    fun getExploreItems(): Flow<Map<ExploreInfo, List<Movie>>> = exploreDao.getExploreMap()
 }

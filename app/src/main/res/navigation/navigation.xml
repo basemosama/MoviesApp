@@ -7,9 +7,14 @@
     <fragment
         android:id="@+id/moviesFragment"
         android:name="com.basemosama.movies.ui.movies.MoviesFragment"
-        android:label="Movies"
+        android:label="@{title}"
         tools:layout="@layout/fragment_movies" >
 
+        <argument
+            android:name="title"
+            android:defaultValue="Movies"
+            app:argType="string"
+            />
         <argument
             android:name="sortOrder"
             app:argType="com.basemosama.movies.data.model.SortOrder"

@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.basemosama.movies.data.Movie
+import com.basemosama.movies.data.model.SortOrder
 import com.basemosama.movies.data.model.explore.ExploreInfo
 import com.basemosama.movies.data.model.explore.ExploreItem
 import com.basemosama.movies.databinding.ItemExploreBinding
@@ -24,7 +25,7 @@ class ExploreAdapter(private val itemClickListener: ItemClickListener) : ListAda
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExploreViewHolder {
-        return ExploreViewHolder.from(parent,itemClickListener)
+        return ExploreViewHolder.from(parent, itemClickListener)
     }
 
     override fun onBindViewHolder(holder: ExploreViewHolder, position: Int) {
@@ -37,8 +38,10 @@ class ExploreAdapter(private val itemClickListener: ItemClickListener) : ListAda
         private val itemClickListener: ItemClickListener,
     ) :
         RecyclerView.ViewHolder(exploreBinding.root), MovieClickListener, View.OnClickListener {
-        private var recyclerView : RecyclerView = exploreBinding.exploreMoviesRv
-        private var moviesAdapter : MovieAdapter = MovieAdapter(this)
+        private var recyclerView: RecyclerView = exploreBinding.exploreMoviesRv
+
+
+        private var moviesAdapter: MovieAdapter = MovieAdapter(this, ExploreViewType.POSTER)
 
         init {
             exploreBinding.moreBtn.setOnClickListener(this)
@@ -47,14 +50,23 @@ class ExploreAdapter(private val itemClickListener: ItemClickListener) : ListAda
                     LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                 setRecycledViewPool(RecyclerView.RecycledViewPool())
                 isNestedScrollingEnabled = false
+
                 recyclerView.adapter = moviesAdapter
             }
         }
 
         fun bind(item: ExploreItem) {
             exploreBinding.explore = item.explore
-            if (item.movies !=null) moviesAdapter.submitList(item.movies)
+
+            if (item.explore.sortOrder == SortOrder.UPCOMING) {
+                moviesAdapter.exploreViewType = ExploreViewType.POSTER_LARGE
+            } else if (item.explore.sortOrder == SortOrder.NOW_PLAYING) {
+                moviesAdapter.exploreViewType = ExploreViewType.BACKDROP
+            }
+
+            if (item.movies != null) moviesAdapter.submitList(item.movies)
         }
+
         override fun onClick(p0: View?) {
             val item = exploreBinding.explore
             itemClickListener.onMoreClickListener(item)
@@ -65,14 +77,12 @@ class ExploreAdapter(private val itemClickListener: ItemClickListener) : ListAda
         }
 
         companion object {
-            fun from(parent: ViewGroup,itemClickListener: ItemClickListener): ExploreViewHolder {
+            fun from(parent: ViewGroup, itemClickListener: ItemClickListener): ExploreViewHolder {
                 val inflater = LayoutInflater.from(parent.context)
                 val itemExploreBinding = ItemExploreBinding.inflate(inflater, parent, false)
-                return ExploreViewHolder(itemExploreBinding,itemClickListener)
+                return ExploreViewHolder(itemExploreBinding, itemClickListener)
             }
         }
-
-
 
 
     }

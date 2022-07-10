@@ -1,9 +1,11 @@
 package com.basemosama.movies.ui.movies
 
 import android.os.Bundle
-import android.view.*
-import android.widget.SearchView
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -16,9 +18,7 @@ import com.basemosama.movies.R
 import com.basemosama.movies.adapters.MovieClickListener
 import com.basemosama.movies.adapters.PagingMovieAdapter
 import com.basemosama.movies.data.Movie
-import com.basemosama.movies.data.model.SortOrder
 import com.basemosama.movies.databinding.FragmentMoviesBinding
-import com.basemosama.movies.utils.onQueryTextChanged
 import com.basemosama.movies.utils.repeatOnLifeCycle
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -40,6 +40,7 @@ class MoviesFragment : Fragment(), MovieClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupUI()
+        setUpToolbar()
         getMovies()
     }
 
@@ -72,7 +73,7 @@ class MoviesFragment : Fragment(), MovieClickListener {
 
             if (state is LoadState.Loading) {
                 recyclerView?.isVisible = false
-            }else{
+            } else {
                 recyclerView?.scrollToPosition(0)
                 recyclerView?.isVisible = true
             }
@@ -85,65 +86,76 @@ class MoviesFragment : Fragment(), MovieClickListener {
         }
 
 
-
     }
 
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.main, menu)
-
-        val searchView = menu.findItem(R.id.action_search).actionView as SearchView
-
-        searchView.onQueryTextChanged() { query ->
-            viewModel.setSearchQuery(query)
-        }
-
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_sort_asc -> {
-                viewModel.saveSortType(SortOrder.BY_TITLE_ASC)
-                true
+    private fun setUpToolbar() {
+        moviesBinding?.toolbar?.apply {
+            inflateMenu(R.menu.main)
+            title = args.title
+            setNavigationIcon(R.drawable.ic_navigate_back)
+            setNavigationOnClickListener {
+                (requireActivity() as AppCompatActivity).onSupportNavigateUp()
             }
-            R.id.action_sort_desc -> {
-                viewModel.saveSortType(SortOrder.BY_TITLE_DESC)
-                true
-            }
-            R.id.action_sort_popular -> {
-                viewModel.saveSortType(SortOrder.POPULAR)
-                true
-            }
-            R.id.action_sort_top_rated -> {
-                viewModel.saveSortType(SortOrder.TOP_RATED)
-                true
-            }
-            R.id.action_sort_upcoming -> {
-                viewModel.saveSortType(SortOrder.UPCOMING)
-                true
-            }
-            R.id.action_sort_now_playing -> {
-                viewModel.saveSortType(SortOrder.NOW_PLAYING)
-                true
-            }
-            R.id.action_sort_trending -> {
-                viewModel.saveSortType(SortOrder.TRENDING)
-                true
-            }
-
-
-            else -> super.onOptionsItemSelected(item)
-
         }
 
 
     }
+
+//    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+//        inflater.inflate(R.menu.main, menu)
+//
+//        val searchView = menu.findItem(R.id.action_search).actionView as SearchView
+//
+//        searchView.onQueryTextChanged() { query ->
+//            viewModel.setSearchQuery(query)
+//        }
+//
+//        super.onCreateOptionsMenu(menu, inflater)
+//    }
+//
+//
+//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+//        return when (item.itemId) {
+//            R.id.action_sort_asc -> {
+//                viewModel.saveSortType(SortOrder.BY_TITLE_ASC)
+//                true
+//            }
+//            R.id.action_sort_desc -> {
+//                viewModel.saveSortType(SortOrder.BY_TITLE_DESC)
+//                true
+//            }
+//            R.id.action_sort_popular -> {
+//                viewModel.saveSortType(SortOrder.POPULAR)
+//                true
+//            }
+//            R.id.action_sort_top_rated -> {
+//                viewModel.saveSortType(SortOrder.TOP_RATED)
+//                true
+//            }
+//            R.id.action_sort_upcoming -> {
+//                viewModel.saveSortType(SortOrder.UPCOMING)
+//                true
+//            }
+//            R.id.action_sort_now_playing -> {
+//                viewModel.saveSortType(SortOrder.NOW_PLAYING)
+//                true
+//            }
+//            R.id.action_sort_trending -> {
+//                viewModel.saveSortType(SortOrder.TRENDING)
+//                true
+//            }
+//
+//
+//            else -> super.onOptionsItemSelected(item)
+//
+//        }
+//
+//
+//    }
 
 
     override fun onMovieClickListener(movie: Movie?) {
-       // Toast.makeText(context, movie?.title, Toast.LENGTH_SHORT).show()
+        // Toast.makeText(context, movie?.title, Toast.LENGTH_SHORT).show()
         movie?.id?.let {
             val action = MoviesFragmentDirections.actionMoviesFragmentToDetailsFragment2(it)
             findNavController().navigate(action)
