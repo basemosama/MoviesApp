@@ -12,8 +12,8 @@
 
         <argument
             android:name="title"
-            android:defaultValue="Movies"
             app:argType="string"
+            android:defaultValue="Movies"
             />
         <argument
             android:name="sortOrder"
@@ -45,7 +45,7 @@
     <fragment
         android:id="@+id/exploreFragment"
         android:name="com.basemosama.movies.ui.explore.ExploreFragment"
-        android:label="ExploreFragment" >
+        android:label="@string/explore_title" >
         <action
             android:id="@+id/action_exploreFragment_to_moviesFragment"
             app:destination="@id/moviesFragment" />
@@ -53,4 +53,9 @@
             android:id="@+id/action_exploreFragment_to_detailsFragment"
             app:destination="@id/detailsFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.basemosama.movies.ui.search.SearchFragment"
+        android:label="@string/search_title"
+        tools:layout="@layout/fragment_search" />
 </navigation>

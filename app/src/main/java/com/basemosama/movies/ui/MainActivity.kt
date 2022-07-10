@@ -7,6 +7,7 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
+import androidx.navigation.ui.setupWithNavController
 import com.basemosama.movies.R
 import com.basemosama.movies.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -24,8 +25,6 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-
-
     private fun setupNavigation(){
         appBarConfiguration = AppBarConfiguration.Builder(setOf(
             R.id.moviesFragment,
@@ -35,6 +34,7 @@ class MainActivity : AppCompatActivity() {
 
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
+        mainBinding.bottomNavigation.setupWithNavController(navController)
     }
 
     override fun onSupportNavigateUp(): Boolean {

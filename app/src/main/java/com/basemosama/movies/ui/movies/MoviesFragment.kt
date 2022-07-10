@@ -92,6 +92,7 @@ class MoviesFragment : Fragment(), MovieClickListener {
         moviesBinding?.toolbar?.apply {
             inflateMenu(R.menu.main)
             title = args.title
+            if(title != getString(R.string.title_movies))
             setNavigationIcon(R.drawable.ic_navigate_back)
             setNavigationOnClickListener {
                 (requireActivity() as AppCompatActivity).onSupportNavigateUp()

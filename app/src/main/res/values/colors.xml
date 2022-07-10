@@ -10,4 +10,7 @@
     <color name="colorAccent">#F36A60</color>
     <color name="material_white">#F3F0F0</color>
     <color name="md_blue_200">#90CAF9</color>
+    <color name="colorGreyDark">#48596A</color>
+    <color name="colorGreyLight">#7A8A98</color>
+    <color name="colorGreyDarker">#313B45</color>
 </resources>
