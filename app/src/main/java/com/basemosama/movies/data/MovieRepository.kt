@@ -14,6 +14,7 @@ import com.basemosama.movies.database.dao.RecentDao
 import com.basemosama.movies.network.ApiService
 import com.basemosama.movies.network.networkBoundResource
 import com.basemosama.movies.network.utils.NetworkResult
+import com.basemosama.movies.pagination.MoviePagingSource
 import com.basemosama.movies.pagination.MovieRemoteKey
 import com.basemosama.movies.pagination.MovieRemoteMediator
 import com.basemosama.movies.utils.PreferenceManger
@@ -64,16 +65,11 @@ class MovieRepository @Inject constructor(
         }.flow
 
 
-    @OptIn(ExperimentalPagingApi::class)
     fun getSearchedMovies(search: String = DEFAULT_SEARCH_QUERY) =
         Pager(
-            searchConfig,
-            remoteMediator = MovieRemoteMediator(
-                repository = this,
-                SortOrder.POPULAR,
-                search.ifEmpty { DEFAULT_SEARCH_QUERY })
+            searchConfig
         ) {
-            getPagedMoviesFromDB(SortOrder.POPULAR, search)
+            MoviePagingSource(this,search)
         }.flow
 
     suspend fun getMoviesByQueryFromApi(query: String, page: Int) =
