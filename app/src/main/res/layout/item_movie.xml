@@ -10,7 +10,7 @@
     </data>
 <androidx.cardview.widget.CardView
     android:layout_width="match_parent"
-    android:layout_height="180dp"
+    android:layout_height="170dp"
     app:cardCornerRadius="15dp"
     app:cardElevation="10dp"
     android:layout_margin="10dp"
@@ -21,8 +21,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:src="@drawable/madmax"
+        android:src="@drawable/ic_placeholder"
         app:image="@{movie.posterPath}"
-        app:type="@{ImageType.POSTER}"
+        app:type="@{ImageType.POSTER_MEDIUM}"
         android:contentDescription="@string/movie_poster"
         android:layout_gravity="center"
         />

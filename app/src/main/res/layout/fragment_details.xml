@@ -12,17 +12,25 @@
 
     </data>
 
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        >
+
 <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.details.DetailsFragment">
+    tools:context=".ui.details.DetailsFragment"
+    android:background="@drawable/background_gradient"
+    >
 
         <ImageView
             android:id="@+id/background_image"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            app:image="@{movie.posterPath}"
-            app:type="@{ImageType.BACKDROP}"
+            android:layout_height="250dp"
+            app:image="@{movie.backdropPath}"
+            app:type="@{ImageType.BACKDROP_MEDIUM}"
             tools:scaleType="fitXY"
             tools:src="@drawable/madmax"
             tools:ignore="MissingConstraints" />
@@ -172,4 +180,6 @@
     </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+
 </layout>

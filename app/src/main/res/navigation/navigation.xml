@@ -3,12 +3,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation"
-    app:startDestination="@id/moviesFragment">
+    app:startDestination="@id/exploreFragment">
     <fragment
         android:id="@+id/moviesFragment"
         android:name="com.basemosama.movies.ui.movies.MoviesFragment"
-        android:label="Movies"
+        android:label="@{title}"
         tools:layout="@layout/fragment_movies" >
+
+        <argument
+            android:name="title"
+            app:argType="string"
+            android:defaultValue="Movies"
+            />
+        <argument
+            android:name="sortOrder"
+            app:argType="com.basemosama.movies.data.model.SortOrder"
+            android:defaultValue="POPULAR" />
         <action
             android:id="@+id/action_moviesFragment_to_detailsFragment2"
             app:destination="@id/detailsFragment"
@@ -16,16 +26,43 @@
             app:exitAnim="@android:anim/slide_out_right"
             app:popEnterAnim="@android:anim/slide_in_left"
             app:popExitAnim="@android:anim/slide_out_right" >
-            <argument
-                android:name="movieId"
-                app:argType="long"
 
-                />
         </action>
+
     </fragment>
     <fragment
         android:id="@+id/detailsFragment"
         android:name="com.basemosama.movies.ui.details.DetailsFragment"
         android:label="Details"
-        tools:layout="@layout/fragment_details" />
+        tools:layout="@layout/fragment_details" >
+
+        <argument
+            android:name="movieId"
+            app:argType="long"
+
+            />
+    </fragment>
+    <fragment
+        android:id="@+id/exploreFragment"
+        android:name="com.basemosama.movies.ui.explore.ExploreFragment"
+        android:label="@string/explore_title" >
+        <action
+            android:id="@+id/action_exploreFragment_to_moviesFragment"
+            app:destination="@id/moviesFragment" />
+        <action
+            android:id="@+id/action_exploreFragment_to_detailsFragment"
+            app:destination="@id/detailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.basemosama.movies.ui.search.SearchFragment"
+        android:label="@string/search_title"
+        tools:layout="@layout/fragment_search" >
+        <action
+            android:id="@+id/action_searchFragment_to_moviesFragment"
+            app:destination="@id/moviesFragment" />
+        <action
+            android:id="@+id/action_searchFragment_to_detailsFragment"
+            app:destination="@id/detailsFragment" />
+    </fragment>
 </navigation>

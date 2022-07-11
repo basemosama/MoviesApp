@@ -1,9 +1,9 @@
-package com.basemosama.movies.database
+package com.basemosama.movies.database.dao
 
 import androidx.paging.LoadType
 import androidx.room.*
 import com.basemosama.movies.data.Movie
-import com.basemosama.movies.data.SortOrder
+import com.basemosama.movies.data.model.SortOrder
 import com.basemosama.movies.pagination.MovieRemoteKey
 
 @Dao
@@ -18,7 +18,7 @@ interface MovieRemoteKeyDao {
 
     @Transaction
     @Query(
-        "DELETE FROM movies WHERE id IN ( SELECT movieId FROM movie_remote_key_table " +
+        "DELETE FROM movies WHERE movieId IN ( SELECT movieId FROM movie_remote_key_table " +
                 "WHERE searchQuery = :query AND sortOrder = :sortOrder)"
     )
     suspend fun deleteMoviesByRemoteKeys(query: String, sortOrder: SortOrder)

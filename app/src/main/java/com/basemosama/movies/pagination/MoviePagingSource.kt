@@ -4,11 +4,11 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.basemosama.movies.data.Movie
 import com.basemosama.movies.data.MovieRepository
-import com.basemosama.movies.data.SortOrder
 import com.basemosama.movies.network.utils.NetworkResult
 
 class MoviePagingSource(
-   private val repository: MovieRepository
+    private val repository: MovieRepository,
+    private val query: String
 ) : PagingSource<Int, Movie>() {
     override fun getRefreshKey(state: PagingState<Int, Movie>): Int? {
 
@@ -27,21 +27,22 @@ class MoviePagingSource(
 
     }
 
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Movie> {
-            // Start refresh at page 1 if undefined.
-            val nextPageNumber = params.key ?: 1
-            val response = repository.getMoviesBySortOrderFromApi(SortOrder.POPULAR, nextPageNumber)
-        return if(response is NetworkResult.Success){
-            val movies = response.data.results?: emptyList()
-            val nextPage:Int? = if(response.data.page < response.data.totalPages) response.data.page + 1 else null
-            LoadResult.Page(
+    override suspend fun load(params: LoadParams<Int>): PagingSource.LoadResult<Int, Movie> {
+        // Start refresh at page 1 if undefined.
+        val nextPageNumber = params.key ?: 1
+        val response = repository.getMoviesByQueryFromApi(query, nextPageNumber)
+        return if (response is NetworkResult.Success) {
+            val movies = response.data.results ?: emptyList()
+            val nextPage: Int? =
+                if (response.data.page < response.data.totalPages) response.data.page + 1 else null
+            PagingSource.LoadResult.Page(
                 data = movies,
                 prevKey = null, // Only paging forward.
-                nextKey =nextPage
+                nextKey = nextPage
             )
-        }else{
+        } else {
             val error = (response as NetworkResult.Error).errorMessage
-            LoadResult.Error(Exception (error))
+            PagingSource.LoadResult.Error(Exception(error))
         }
 
     }

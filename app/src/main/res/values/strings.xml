@@ -13,4 +13,11 @@
 
     <string name="default_order">Default order</string>
     <string name="movie_poster">Movie Poster</string>
+    <string name="more_text">More</string>
+    <string name="title_movies">Movies</string>
+    <string name="menu_item_explore">Explore</string>
+    <string name="menu_item_search">Search</string>
+    <string name="menu_item_movies">Movies</string>
+    <string name="explore_title">Explore</string>
+    <string name="search_title">Search</string>
 </resources>
