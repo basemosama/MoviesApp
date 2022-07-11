@@ -15,14 +15,17 @@ const val BASE_IMAGE_URL = "https://image.tmdb.org/t/p/"
 @BindingAdapter("image", "type", requireAll = true)
 fun setImage(view: ImageView, path: String?, type: ImageType) {
 
-    val width = type.width
-    val url = BASE_IMAGE_URL + width + path
-    Glide.with(view).load(url)
-        .fallback(R.drawable.ic_placeholder)
-        .error(R.drawable.ic_placeholder)
-        .placeholder(R.drawable.ic_placeholder)
-        .centerCrop()
-        .into(view)
+    if (!path.isNullOrEmpty()) {
+        val width = type.width
+        val url = BASE_IMAGE_URL + width + path
+        Glide.with(view).load(url)
+            .fallback(R.drawable.ic_placeholder)
+            .error(R.drawable.ic_placeholder)
+            .placeholder(R.drawable.ic_placeholder)
+            .centerCrop()
+            .into(view)
+    }
+
 }
 
 @BindingAdapter("sliderImage", "type", requireAll = true)

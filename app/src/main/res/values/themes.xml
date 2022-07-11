@@ -17,4 +17,13 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="cancelAlertDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:background">@color/colorGreyMid</item>
+        <item name="android:textColor">#fff</item>
+        <item name="android:textColorPrimary">#E4D3D3</item>
+        <item name="colorAccent">#DF5656</item>
+
+    </style>
+
+
 </resources>

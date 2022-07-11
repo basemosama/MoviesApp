@@ -22,7 +22,6 @@ class ExploreViewModel @Inject constructor(private val repository :MovieReposito
             repository.handleExplore()
         }
 
-
     }
 
     val exploreItems = repository.getExploreItems()

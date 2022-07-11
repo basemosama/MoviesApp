@@ -21,6 +21,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:src="@drawable/madmax"
+        android:src="@drawable/ic_placeholder"
         app:image="@{movie.posterPath}"
         app:type="@{ImageType.POSTER_MEDIUM}"
         android:contentDescription="@string/movie_poster"

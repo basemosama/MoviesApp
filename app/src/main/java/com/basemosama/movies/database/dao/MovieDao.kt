@@ -1,4 +1,4 @@
-package com.basemosama.movies.database
+package com.basemosama.movies.database.dao
 
 import androidx.paging.PagingSource
 import androidx.room.*

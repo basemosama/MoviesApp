@@ -13,4 +13,5 @@
     <color name="colorGreyDark">#48596A</color>
     <color name="colorGreyLight">#7A8A98</color>
     <color name="colorGreyDarker">#313B45</color>
+    <color name="colorGreyMid">#48596A</color>
 </resources>

@@ -8,6 +8,7 @@ import com.basemosama.movies.data.Movie
 import com.basemosama.movies.data.MovieRepository
 import com.basemosama.movies.data.model.SortOrder
 import com.basemosama.movies.network.utils.NetworkResult
+import timber.log.Timber
 
 @OptIn(ExperimentalPagingApi::class)
 class MovieRemoteMediator(
@@ -18,6 +19,7 @@ class MovieRemoteMediator(
 
     ) :
     RemoteMediator<Int, Movie>() {
+    private  val DEFAULT_SEARCH_QUERY = "DEFAULT_QUERY"
 
     override suspend fun initialize(): InitializeAction {
         // Require that remote REFRESH is launched on initial load and succeeds before launching
@@ -50,8 +52,14 @@ class MovieRemoteMediator(
         }
 
 
-        val response = repository.getMoviesBySortOrderFromApi(sortOrder,page)
 
+        val response =if(query ==DEFAULT_SEARCH_QUERY)
+            repository.getMoviesBySortOrderFromApi(sortOrder,page)
+        else repository.getMoviesByQueryFromApi(query,page)
+
+
+
+        Timber.d("Loading page $page for query $query and sort order $sortOrder remoteKey")
         if (response is NetworkResult.Success) {
             val movies = response.data.results ?: emptyList()
             val nextPage: Int? =

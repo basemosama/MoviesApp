@@ -1,6 +1,6 @@
 package com.basemosama.movies.utils
 
-import android.widget.SearchView
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -72,11 +72,11 @@ fun getExploreData(): List<ExploreInfo> {
             "Upcoming",
             SortOrder.UPCOMING
         ), ExploreInfo(
-            4,
+            5,
             "Now Playing",
             SortOrder.NOW_PLAYING
         ), ExploreInfo(
-            5,
+            4,
             "Trending",
             SortOrder.TRENDING
         ), ExploreInfo(

@@ -4,10 +4,13 @@ import androidx.paging.*
 import com.basemosama.movies.data.model.SortOrder
 import com.basemosama.movies.data.model.explore.ExploreInfo
 import com.basemosama.movies.data.model.explore.ExploreMovieCrossRef
+import com.basemosama.movies.data.model.search.RecentMovie
+import com.basemosama.movies.data.model.search.RecentSearch
 import com.basemosama.movies.data.network.PagedResponse
-import com.basemosama.movies.database.ExploreDao
-import com.basemosama.movies.database.MovieDao
-import com.basemosama.movies.database.MovieRemoteKeyDao
+import com.basemosama.movies.database.dao.ExploreDao
+import com.basemosama.movies.database.dao.MovieDao
+import com.basemosama.movies.database.dao.MovieRemoteKeyDao
+import com.basemosama.movies.database.dao.RecentDao
 import com.basemosama.movies.network.ApiService
 import com.basemosama.movies.network.networkBoundResource
 import com.basemosama.movies.network.utils.NetworkResult
@@ -15,6 +18,7 @@ import com.basemosama.movies.pagination.MovieRemoteKey
 import com.basemosama.movies.pagination.MovieRemoteMediator
 import com.basemosama.movies.utils.PreferenceManger
 import com.basemosama.movies.utils.Resource
+import com.basemosama.movies.utils.getExploreData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -28,6 +32,7 @@ class MovieRepository @Inject constructor(
     private val movieDao: MovieDao,
     private val movieRemoteKeyDao: MovieRemoteKeyDao,
     private val exploreDao: ExploreDao,
+    private val recentDao: RecentDao,
     private val preferenceManger: PreferenceManger
 ) {
 
@@ -37,6 +42,11 @@ class MovieRepository @Inject constructor(
         val config = PagingConfig(
             pageSize = PAGE_SIZE,
             enablePlaceholders = true
+        )
+        val searchConfig = PagingConfig(
+            pageSize = PAGE_SIZE,
+            enablePlaceholders = true,
+            initialLoadSize = PAGE_SIZE * 2
         )
     }
 
@@ -53,6 +63,21 @@ class MovieRepository @Inject constructor(
             getPagedMoviesFromDB(sort, search)
         }.flow
 
+
+    @OptIn(ExperimentalPagingApi::class)
+    fun getSearchedMovies(search: String = DEFAULT_SEARCH_QUERY) =
+        Pager(
+            searchConfig,
+            remoteMediator = MovieRemoteMediator(
+                repository = this,
+                SortOrder.POPULAR,
+                search.ifEmpty { DEFAULT_SEARCH_QUERY })
+        ) {
+            getPagedMoviesFromDB(SortOrder.POPULAR, search)
+        }.flow
+
+    suspend fun getMoviesByQueryFromApi(query: String, page: Int) =
+        apiClient.searchMovies(page, query)
 
     suspend fun getMoviesBySortOrderFromApi(
         sortBy: SortOrder,
@@ -97,7 +122,7 @@ class MovieRepository @Inject constructor(
 
 
     suspend fun handleExplore() {
-        //exploreDao.insertAll(getExploreData())
+        exploreDao.insertAll(getExploreData())
         val exploreList = exploreDao.getExploreInfo().first()
         val shouldFetch = shouldFetchExploreItems()
         var order = 0L
@@ -171,4 +196,21 @@ class MovieRepository @Inject constructor(
 
 
     fun getExploreItems(): Flow<Map<ExploreInfo, List<Movie>>> = exploreDao.getExploreMap()
+
+
+    fun getRecentSearches() = recentDao.getRecentSearches()
+
+    fun getRecentMovies() = recentDao.getRecentMovies()
+
+    suspend fun clearRecent() = withContext(Dispatchers.IO) {
+        recentDao.clearRecent()
+    }
+
+    suspend fun insertRecentSearch(query: String) = withContext(Dispatchers.IO) {
+        recentDao.insertRecentSearch(RecentSearch(query, Date()))
+    }
+
+    suspend fun insertRecentMovie(movie: Movie) = withContext(Dispatchers.IO) {
+        recentDao.insertRecentMovie(RecentMovie(movie.id, movie, Date()))
+    }
 }
