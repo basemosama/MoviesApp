@@ -2,6 +2,7 @@ package com.basemosama.movies.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -35,11 +36,15 @@ class MainActivity : AppCompatActivity() {
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
         mainBinding.bottomNavigation.setupWithNavController(navController)
+        navController.addOnDestinationChangedListener(){_, destination, _ ->
+            mainBinding.bottomNavigation.isVisible = destination.id != R.id.detailsFragment
+
+        }
+
     }
 
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp(appBarConfiguration)
                 || super.onSupportNavigateUp()
-
     }
 }

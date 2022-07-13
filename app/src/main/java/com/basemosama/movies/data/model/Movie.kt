@@ -3,6 +3,7 @@ package com.basemosama.movies.data
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.basemosama.movies.data.model.details.MovieDetailsResponse
 import com.google.gson.annotations.SerializedName
 import java.util.*
 
@@ -11,7 +12,7 @@ import java.util.*
 data class Movie(
     @PrimaryKey
     @ColumnInfo(name = "movieId")
-    var id:Long,
+    var id: Long,
     var title: String,
     @SerializedName("original_title")
     var originalTitle: String?,
@@ -33,11 +34,35 @@ data class Movie(
     var popularity: Double?,
     @SerializedName("genre_ids") var genreIds: LongArray?,
     @SerializedName("release_date")
-    var releaseDate: Date?
-
+    var releaseDate: Date?,
+    var lastUpdatedAt: Date?
 
 
 ) {
+
+
+    constructor(details: MovieDetailsResponse) : this(
+        details.id,
+        details.title,
+        details.originalTitle,
+        details.overview,
+        details.adult,
+        details.backdropPath,
+        details.posterPath,
+        details.budget,
+        details.revenue,
+        details.runtime,
+        details.status,
+        details.tagline,
+        details.voteAverage,
+        details.voteCount,
+        details.popularity,
+        null,
+        details.releaseDate,
+        Date()
+    )
+
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -90,7 +115,12 @@ data class Movie(
     }
 }
 
-data class Genre(var id: Int?, var name: String?)
+@Entity(tableName = "genres")
+data class Genre(
+    @PrimaryKey
+    var id: Long,
+    var name: String?
+)
 
 class ProductionCompany(id: Long, logoPath: String?, name: String?, originCountry: String?)
 
@@ -99,7 +129,7 @@ class ProductionCountry(@SerializedName("iso_3166_1") var code: String?, name: S
 
 class SpokenLanguage(englishName: String?, code: String?, name: String?)
 
-enum class ImageType (val width:String){
+enum class ImageType(val width: String) {
     BACKDROP_SMALL("w300"),
     BACKDROP_MEDIUM("w780"),
     BACKDROP_LARGE("w1280"),

@@ -8,178 +8,317 @@
         <variable
             name="movie"
             type="com.basemosama.movies.data.Movie" />
-        <import type="com.basemosama.movies.data.ImageType"/>
+
+        <import type="com.basemosama.movies.data.ImageType" />
 
     </data>
 
-    <androidx.core.widget.NestedScrollView
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@drawable/background_gradient"
+        android:fitsSystemWindows="true"
+        tools:context=".MainActivity">
 
-        >
-
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.details.DetailsFragment"
-    android:background="@drawable/background_gradient"
-    >
-
-        <ImageView
-            android:id="@+id/background_image"
+        <com.google.android.material.appbar.AppBarLayout android:id="@+id/app_bar"
             android:layout_width="match_parent"
-            android:layout_height="250dp"
-            app:image="@{movie.backdropPath}"
-            app:type="@{ImageType.BACKDROP_MEDIUM}"
-            tools:scaleType="fitXY"
-            tools:src="@drawable/madmax"
-            tools:ignore="MissingConstraints" />
+            android:layout_height="300dp"
+            android:fitsSystemWindows="true"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-        <TextView
+            <com.google.android.material.appbar.CollapsingToolbarLayout
+                android:id="@+id/toolbar_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fitsSystemWindows="true"
+                app:contentScrim="#48596A"
+                app:layout_scrollFlags="scroll|snap|exitUntilCollapsed"
+                app:toolbarId="@id/toolbar"
+                app:expandedTitleTextColor="@android:color/transparent"
+
+                >
+
+
+                <ImageView
+                    android:id="@+id/background_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"
+                    android:contentDescription="Movie backdrop"
+                    app:image="@{movie.backdropPath}"
+                    app:layout_collapseMode="parallax"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:type="@{ImageType.BACKDROP_MEDIUM}"
+                    tools:scaleType="centerCrop"
+                    tools:src="@drawable/madmax" />
+
+                <androidx.appcompat.widget.Toolbar
+                        android:id="@+id/toolbar"
+                        android:layout_width="match_parent"
+                        android:layout_height="?attr/actionBarSize"
+                        app:layout_collapseMode="pin"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+
+
+
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
+        </com.google.android.material.appbar.AppBarLayout>
+
+
+
+        <androidx.core.widget.NestedScrollView android:id="@+id/details_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:layout_marginTop="-40dp"
+            >
+
+
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:cardElevation="8dp"
+                app:cardCornerRadius="50dp"
+                app:cardBackgroundColor="@color/colorGreyDark"
+                >
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context=".ui.details.DetailsFragment"
+
+                >
+
+
+                <TextView
+                    android:id="@+id/title_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:fontFamily="sans-serif"
+                    android:text="@{movie.title}"
+                    android:textColor="@color/white"
+                    android:textSize="25sp"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:textStyle="bold"
+                    android:visibility="visible"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="Doctor Strange in the nultiverse of madness"
+                    android:gravity="center"
+                    />
+
+                <TextView
+                    android:id="@+id/release_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:drawablePadding="5dp"
+                    android:gravity="center"
+                    android:textColor="#CAC4C4"
+                    android:textSize="18sp"
+                    app:drawableStartCompat="@drawable/ic_calendar"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/runtime_tv"
+
+                    app:layout_constraintTop_toBottomOf="@+id/title_tv"
+                    app:year="@{movie}"
+                    tools:text="2022" />
+
+                <TextView
+                    android:id="@+id/runtime_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:drawablePadding="5dp"
+                    android:textColor="#CAC4C4"
+
+                    android:textSize="18sp"
+                    app:drawableStartCompat="@drawable/ic_recent"
+                    app:layout_constraintEnd_toStartOf="@+id/release_date"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/rating_tv"
+                    app:layout_constraintTop_toBottomOf="@+id/title_tv"
+                    app:runtime="@{movie.runtime}"
+
+                    tools:text="1h 20m" />
+
+
+                <TextView
+                    android:id="@+id/rating_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:drawablePadding="5dp"
+                    android:gravity="center"
+                    android:textColor="#CAC4C4"
+
+                    android:textSize="18sp"
+                    app:drawableStartCompat="@drawable/ic_star"
+                    app:layout_constraintEnd_toStartOf="@+id/runtime_tv"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintHorizontal_chainStyle="packed"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/title_tv"
+                    app:rating="@{movie}"
+
+                    tools:text="7.5" />
+
+
+
+
+                <HorizontalScrollView android:id="@+id/genre_chips_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_margin="10dp"
+                    app:layout_constraintTop_toBottomOf="@id/rating_tv"
+                    android:scrollbars="none"
+                    >
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/genre_chips"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:foregroundGravity="center"
+                    android:checkable="false"
+                    app:singleLine="true"
+                    />
+                </HorizontalScrollView>
+
+                <TextView
+                    android:id="@+id/overview_title_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:text="Overview"
+                    android:textColor="@color/white"
+                    android:gravity="start"
+                    android:textSize="20sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/genre_chips_layout"
+                    />
+                <TextView
+                    android:id="@+id/overview_tv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="start"
+                    android:padding="15dp"
+                    app:text="@{movie.overview}"
+                    android:textColor="@color/colorWhiteBrown"
+                    android:textSize="20sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/overview_title_tv"
+                    tools:text="plot is mad max" />
+
+
+                <TextView
+                    android:id="@+id/cast_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:text="Cast"
+                    android:textColor="@color/white"
+                    android:gravity="start"
+                    android:textSize="20sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/overview_tv"
+                    />
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/cast_rv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="start"
+                    android:padding="15dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/cast_tv"
+                    tools:itemCount="1"
+                    tools:listitem="@layout/item_explore_movie"
+                    />
+
+
+
+                <TextView
+                    android:id="@+id/similar_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:text="Similar Movies"
+                    android:textColor="@color/white"
+                    android:gravity="start"
+                    android:textSize="20sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/cast_rv"
+                    />
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/similar_rv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="start"
+                    android:padding="15dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/similar_tv"
+                    tools:itemCount="1"
+                    tools:listitem="@layout/item_explore_movie"
+                    />
+
+                <TextView
+                    android:id="@+id/recommended_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:text="Recommended Movies"
+                    android:textColor="@color/white"
+                    android:gravity="start"
+                    android:textSize="20sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/similar_rv"
+                    />
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recommended_rv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="start"
+                    android:padding="15dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/recommended_tv"
+                    tools:itemCount="1"
+                    tools:listitem="@layout/item_explore_movie"
+                    />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.cardview.widget.CardView>
+
+
+
+        </androidx.core.widget.NestedScrollView>
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/loading_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:layout_marginStart="44dp"
-            android:text="@{movie.title}"
-            android:textColor="@color/white"
-            android:textSize="25sp"
-            app:layout_constraintBottom_toBottomOf="@+id/background_image"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.057"
-            app:layout_constraintStart_toStartOf="@+id/background_image"
-            app:layout_constraintTop_toTopOf="@+id/background_image"
-            app:layout_constraintVertical_bias="0.927"
-            tools:text="Mad Max" />
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:padding="5dp"
-            app:cardCornerRadius="15dp"
-            app:cardElevation="12dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/background_image">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:baselineAligned="false">
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:drawablePadding="5dp"
-                    android:gravity="center"
-                    android:text="Rating:"
-                    android:textColor="#023863"
-                    android:textSize="22sp"
-                    app:drawableBottomCompat="@drawable/ic_rating"
-
-                    />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text='@{movie.voteAverage+ " /10"}'
-                    android:textColor="@color/black"
-                    android:textSize="20sp"
-                    tools:text="7/10" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:drawablePadding="5dp"
-                    android:gravity="center"
-                    android:text="Runtime:"
-                    android:textColor="#023863"
-                    android:textSize="22sp"
-                    app:drawableBottomCompat="@drawable/ic_runtime"
-
-                    />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    app:runtime="@{movie.runtime}"
-                    android:textColor="@color/black"
-                    android:textSize="20sp"
-                    tools:text="129m" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:drawablePadding="5dp"
-                    android:gravity="center"
-                    android:text="Release Date:"
-                    android:textColor="#023863"
-                    android:textSize="20sp"
-                    app:drawableBottomCompat="@drawable/ic_date"
-
-                        />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:textColor="@color/black"
-                    android:textSize="20sp"
-                    app:date="@{movie}"
-                    tools:text="7/10" />
-            </LinearLayout>
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
-
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:cardCornerRadius="15dp"
-        app:cardElevation="12dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardView"
-        android:layout_margin="10dp"
-
-        >
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@{movie.overview}"
-            android:textColor="@color/black"
-            android:textSize="20sp"
-            tools:text="plot is mad max"
-            android:padding="20dp"/>
-    </androidx.cardview.widget.CardView>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.core.widget.NestedScrollView>
+            android:layout_gravity="center"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/loading"
+            />
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </layout>

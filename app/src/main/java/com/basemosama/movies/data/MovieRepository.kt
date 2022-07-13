@@ -2,6 +2,7 @@ package com.basemosama.movies.data
 
 import androidx.paging.*
 import com.basemosama.movies.data.model.SortOrder
+import com.basemosama.movies.data.model.details.MovieDetails
 import com.basemosama.movies.data.model.explore.ExploreInfo
 import com.basemosama.movies.data.model.explore.ExploreMovieCrossRef
 import com.basemosama.movies.data.model.search.RecentMovie
@@ -86,6 +87,9 @@ class MovieRepository @Inject constructor(
         SortOrder.NOW_PLAYING -> apiClient.getNowPlayingMovies(page)
         SortOrder.BY_TITLE_ASC -> apiClient.getMoviesByTitleASC(page)
         SortOrder.BY_TITLE_DESC -> apiClient.getMoviesByTitleDESC(page)
+        else -> {
+            throw IllegalArgumentException("Unknown sort order")
+        }
     }
 
 
@@ -96,20 +100,29 @@ class MovieRepository @Inject constructor(
         movieDao.getPagedMovies(sortType, search.ifEmpty { DEFAULT_SEARCH_QUERY })
 
 
-    fun getMoviesFromDB(): Flow<List<Movie>> = movieDao.getMovies()
+
+    fun getMovieDetailsById(id:Long):Flow<Resource<MovieDetails>> = networkBoundResource(
+        query = { movieDao.getMovieDetailsById(id) },
+        fetch = { apiClient.getMovieDetails(id) },
+        saveFetchResult = { movieDao.insertMovieDetails(it) },
+        shouldFetch = {details ->
+            val currentTime = Date().time
+            val lastUpdatedAt = details.movie.lastUpdatedAt?.time
+             lastUpdatedAt == null || currentTime - lastUpdatedAt > 1000 * 60 * 60 * 24
+             }
+    )
+
 
     fun getMovieById(id: Long): Flow<Movie> = movieDao.getMovieById(id)
 
-    suspend fun deleteMovies() = withContext(Dispatchers.IO) {
-        movieDao.deleteAllMovies()
-    }
+
 
     private suspend fun insertMoviesToDB(movies: List<Movie>) = withContext(Dispatchers.IO) {
         movieDao.insertMovies(movies)
     }
 
 
-    suspend fun shouldFetchExploreItems(): Boolean {
+    private suspend fun shouldFetchExploreItems(): Boolean {
         val currentDay = Calendar.getInstance().get(Calendar.DAY_OF_YEAR)
         val lastDay = preferenceManger.getExploreLastUpdateDay()
         val shouldFetch = currentDay != lastDay
