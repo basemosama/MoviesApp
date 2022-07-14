@@ -11,6 +11,10 @@ ViewModel based on MVVM architecture built on kotlin.
 </p>
 </br>
 
+##Screens
+
+[![Screens](http://img.youtube.com/vi/ObCQ1YDDIeY/0.jpg)](http://www.youtube.com/watch?v=ObCQ1YDDIeY "Screens")
+
 
 ## Tech stack & Open-source libraries
 - Minimum SDK level 21
@@ -46,15 +50,15 @@ The app is based on the MVVM architecture and the Repository pattern.
 The app uses The Movie DB API in order to fetch movies data.
 To run this application on your machine you have to issue an API KEY from The Movie DB and place it in your gradle.properties file.
 
-API_KEY= "API KEY HERE"
+```API_KEY= "API KEY HERE"```
 
 ## Find this repository useful? :heart:
-Support it by joining __[stargazers](https://github.com/skydoves/Pokedex/stargazers)__ for this repository. :star: <br>
-Also, __[follow me](https://github.com/skydoves)__ on GitHub for my next creations! 🤩
+Support it by starring the repository. :star: and leaving feedback for me. <br>
+Also, [follow me](https://github.com/basemosama)__ on GitHub for my next creations! 🤩
 
 # License
 ```xml
-Designed and developed by 2020 skydoves (Jaewoong Eum)
+Designed and developed by 2022 Basem Osama 
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
