@@ -87,11 +87,5 @@ data class Movie(
 }
 
 
-class ProductionCompany(id: Long, logoPath: String?, name: String?, originCountry: String?)
-
-class ProductionCountry(@SerializedName("iso_3166_1") var code: String?, name: String?)
-
-
-class SpokenLanguage(englishName: String?, code: String?, name: String?)
 
 

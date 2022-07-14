@@ -3,10 +3,7 @@ package com.basemosama.movies.di
 import android.content.Context
 import androidx.room.Room
 import com.basemosama.movies.database.AppDatabase
-import com.basemosama.movies.database.dao.ExploreDao
-import com.basemosama.movies.database.dao.MovieDao
-import com.basemosama.movies.database.dao.MovieRemoteKeyDao
-import com.basemosama.movies.database.dao.RecentDao
+import com.basemosama.movies.database.dao.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -26,8 +23,9 @@ object DatabaseModule {
         return Room.databaseBuilder(
             context,
             AppDatabase::class.java,
-            DATABASE_NAME)
-           // .createFromAsset("movies.db")
+            DATABASE_NAME
+        )
+            .createFromAsset("movies.db")
             .fallbackToDestructiveMigration()
             .build()
     }
@@ -55,6 +53,13 @@ object DatabaseModule {
     @Provides
     fun provideRecentDao(database: AppDatabase): RecentDao {
         return database.recentDao()
+    }
+
+
+    @Singleton
+    @Provides
+    fun provideMovieDetailsDao(database: AppDatabase): MovieDetailsDao {
+        return database.detailsDao()
     }
 }
 

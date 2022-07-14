@@ -14,11 +14,13 @@ interface ExploreDao {
 
     //GET Explore items with movies of each category
     // used the map function so i can control the order of the movies in the each category
-    @Query("SELECT explore.*,movies.* FROM explore " +
-            "JOIN explore_movies_cross_ref_table ON explore.exploreId= explore_movies_cross_ref_table.exploreId " +
-            "JOIN movies ON  explore_movies_cross_ref_table.movieId = movies.movieId " +
-            "ORDER BY explore_movies_cross_ref_table.movieOrder ASC")
-    fun getExploreMap():Flow<Map<ExploreInfo,List<Movie>>>
+    @Query(
+        "SELECT explore.*,movies.* FROM explore " +
+                "JOIN explore_movies_cross_ref_table ON explore.exploreId= explore_movies_cross_ref_table.exploreId " +
+                "JOIN movies ON  explore_movies_cross_ref_table.movieId = movies.movieId " +
+                "ORDER BY explore_movies_cross_ref_table.movieOrder ASC"
+    )
+    fun getExploreMap(): Flow<Map<ExploreInfo, List<Movie>>>
 
 
     @Query("SELECT * FROM explore ")

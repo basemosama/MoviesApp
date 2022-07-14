@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -46,6 +45,9 @@ class ExploreFragment : Fragment(), ExploreAdapter.ItemClickListener,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getExploreItems()
+        setUpSlider()
+        handleLoadingState()
+
     }
 
     private fun setupUI() {
@@ -56,19 +58,8 @@ class ExploreFragment : Fragment(), ExploreAdapter.ItemClickListener,
             setHasFixedSize(true)
 
         }
-        setUpToolbar()
-        setUpSlider()
-
     }
 
-
-    private fun setUpToolbar() {
-        exploreBinding.toolbar.apply {
-          //  inflateMenu(R.menu.main)
-            //title = "Explore"
-        }
-
-    }
 
     private fun setUpSlider() {
         sliderAdapter = SliderAdapter(emptyList(), this)
@@ -96,6 +87,15 @@ class ExploreFragment : Fragment(), ExploreAdapter.ItemClickListener,
     }
 
 
+    private fun handleLoadingState(){
+        viewModel.isLoading.observe(viewLifecycleOwner){ isLoading->
+            exploreBinding.loadingView.isVisible = isLoading
+            exploreBinding.appBar.isVisible = !isLoading
+            exploreBinding.exploreRv.isVisible = !isLoading
+        }
+    }
+
+
     private fun getExploreItems() {
         repeatOnLifeCycle(viewModel.exploreItems) {
             val exploreItems = it.map { (explore, movies) ->
@@ -107,28 +107,26 @@ class ExploreFragment : Fragment(), ExploreAdapter.ItemClickListener,
             }.toList()
 
             exploreAdapter.submitList(exploreItems)
-
+            viewModel.setIsLoading(false)
         }
     }
 
 
-    private fun setUpSliderItems(movies:List<Movie>){
+    private fun setUpSliderItems(movies: List<Movie>) {
         val sliderMovies = movies.sortedBy { movie ->
-            movie.releaseDate
+            movie.popularity
         }.take(5)
         sliderAdapter.updateList(sliderMovies)
-        exploreBinding.appBar.isVisible = true
         viewModel.sliderItemsCount.value = sliderMovies.size
 
     }
 
     override fun onMoreClickListener(item: ExploreInfo?) {
-        Toast.makeText(context, "More Clicked", Toast.LENGTH_SHORT).show()
 
-        item?.let { item ->
+        item?.let {
             val action = ExploreFragmentDirections.actionExploreFragmentToMoviesFragment(
-                item.title,
-                item.sortOrder
+                it.title,
+                it.sortOrder
             )
             findNavController().navigate(action)
         }

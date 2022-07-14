@@ -57,7 +57,7 @@ fun ImageView.setMovieImage(movie: Movie?, type: ImageType) {
 }
 
 @BindingAdapter("text")
-fun TextView.setText(_text: String?) {
+fun TextView.setItemText(_text: String?) {
     text = _text ?: ""
 }
 

@@ -65,3 +65,10 @@ data class Crew(
     val popularity: Double,
     val profile_path: String
 )
+
+
+data class ProductionCompany(val id: Long,val logoPath: String?,val name: String?,val originCountry: String?)
+
+data class ProductionCountry(@SerializedName("iso_3166_1") var code: String?,val name: String?)
+
+data class SpokenLanguage(val englishName: String?,val code: String?,val name: String?)

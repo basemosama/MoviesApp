@@ -1,5 +1,6 @@
 package com.basemosama.movies.data.model.utils
 
+//helper class to get the correct image size path for the api
 enum class ImageType(val width: String) {
     BACKDROP_SMALL("w300"),
     BACKDROP_MEDIUM("w780"),

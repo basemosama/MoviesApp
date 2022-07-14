@@ -41,11 +41,6 @@ class SearchViewModel @Inject constructor(val repository: MovieRepository) : Vie
         emptyList()
     )
 
-     fun clearRecent() {
-        viewModelScope.launch {
-            repository.clearRecent()
-        }
-    }
 
     fun insertRecentSearch(query: String) {
         viewModelScope.launch {
@@ -58,6 +53,12 @@ class SearchViewModel @Inject constructor(val repository: MovieRepository) : Vie
             repository.insertRecentMovie(movie)
         }
 
+    }
+
+    fun clearRecent() {
+        viewModelScope.launch {
+            repository.clearRecent()
+        }
     }
 
 

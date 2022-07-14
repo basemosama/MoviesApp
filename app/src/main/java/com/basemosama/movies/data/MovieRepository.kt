@@ -9,10 +9,7 @@ import com.basemosama.movies.data.model.explore.ExploreMovieCrossRef
 import com.basemosama.movies.data.model.search.RecentSearch
 import com.basemosama.movies.data.model.utils.SortOrder
 import com.basemosama.movies.data.network.PagedResponse
-import com.basemosama.movies.database.dao.ExploreDao
-import com.basemosama.movies.database.dao.MovieDao
-import com.basemosama.movies.database.dao.MovieRemoteKeyDao
-import com.basemosama.movies.database.dao.RecentDao
+import com.basemosama.movies.database.dao.*
 import com.basemosama.movies.network.ApiService
 import com.basemosama.movies.network.networkBoundResource
 import com.basemosama.movies.network.utils.NetworkResult
@@ -21,12 +18,10 @@ import com.basemosama.movies.pagination.MovieRemoteKey
 import com.basemosama.movies.pagination.MovieRemoteMediator
 import com.basemosama.movies.utils.PreferenceManger
 import com.basemosama.movies.utils.Resource
-import com.basemosama.movies.utils.getExploreData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -37,6 +32,7 @@ class MovieRepository @Inject constructor(
     private val movieRemoteKeyDao: MovieRemoteKeyDao,
     private val exploreDao: ExploreDao,
     private val recentDao: RecentDao,
+    private val movieDetailsDao: MovieDetailsDao,
     private val preferenceManger: PreferenceManger
 ) {
 
@@ -55,74 +51,8 @@ class MovieRepository @Inject constructor(
     }
 
 
-    @OptIn(ExperimentalPagingApi::class)
-    fun getPagingMovies(sort: SortOrder, search: String = DEFAULT_SEARCH_QUERY) =
-        Pager(
-            config,
-            remoteMediator = MovieRemoteMediator(
-                repository = this,
-                sort,
-                search.ifEmpty { DEFAULT_SEARCH_QUERY })
-        ) {
-            getPagedMoviesFromDB(sort, search)
-        }.flow
-
-
-    fun getSearchedMovies(search: String = DEFAULT_SEARCH_QUERY) =
-        Pager(
-            searchConfig
-        ) {
-            MoviePagingSource(this,search)
-        }.flow
-
-    suspend fun getMoviesByQueryFromApi(query: String, page: Int) =
-        apiClient.searchMovies(page, query)
-
-    suspend fun getMoviesBySortOrderFromApi(
-        sortBy: SortOrder,
-        page: Int
-    ): NetworkResult<PagedResponse<Movie>> = when (sortBy) {
-        SortOrder.POPULAR -> apiClient.getPopularMovies(page)
-        SortOrder.TOP_RATED -> apiClient.getTopRatedMovies(page)
-        SortOrder.UPCOMING -> apiClient.getUpcomingMovies(page)
-        SortOrder.TRENDING -> apiClient.getTrendingMovies(page)
-        SortOrder.NOW_PLAYING -> apiClient.getNowPlayingMovies(page)
-        SortOrder.BY_TITLE_ASC -> apiClient.getMoviesByTitleASC(page)
-        SortOrder.BY_TITLE_DESC -> apiClient.getMoviesByTitleDESC(page)
-        else -> {
-            throw IllegalArgumentException("Unknown sort order")
-        }
-    }
-
-
-    private fun getPagedMoviesFromDB(
-        sortType: SortOrder = SortOrder.POPULAR,
-        search: String
-    ): PagingSource<Int, Movie> =
-        movieDao.getPagedMovies(sortType, search.ifEmpty { DEFAULT_SEARCH_QUERY })
-
-
-
-    fun getMovieDetailsById(id:Long):Flow<Resource<MovieDetails?>> = networkBoundResource<MovieDetails?,MovieDetailsResponse>(
-        query = { movieDao.getMovieDetailsById(id) },
-        fetch = { apiClient.getMovieDetails(id) },
-        saveFetchResult = { movieDao.insertMovieDetails(it) },
-        shouldFetch = {details ->
-            val currentTime = Date().time
-            val lastUpdatedAt = details?.movie?.lastUpdatedAt?.time
-             lastUpdatedAt == null || currentTime - lastUpdatedAt > 1000 * 60 * 60 * 24
-             }
-    )
-
-
-    fun getMovieById(id: Long): Flow<Movie> = movieDao.getMovieById(id)
-
-
-
-    private suspend fun insertMoviesToDB(movies: List<Movie>) = withContext(Dispatchers.IO) {
-        movieDao.insertMovies(movies)
-    }
-
+    //Explore
+    fun getExploreItems(): Flow<Map<ExploreInfo, List<Movie>>> = exploreDao.getExploreMap()
 
     private suspend fun shouldFetchExploreItems(): Boolean {
         val currentDay = Calendar.getInstance().get(Calendar.DAY_OF_YEAR)
@@ -132,7 +62,7 @@ class MovieRepository @Inject constructor(
 
 
     suspend fun handleExplore() {
-        exploreDao.insertAll(getExploreData())
+        //exploreDao.insertAll(getExploreData())
         val exploreList = exploreDao.getExploreInfo().first()
         val shouldFetch = shouldFetchExploreItems()
         var order = 0L
@@ -162,26 +92,58 @@ class MovieRepository @Inject constructor(
     }
 
 
-    fun getMovies(sortType: SortOrder, page: Int): Flow<Resource<List<Movie>>> =
-        networkBoundResource(
-            query = {
-                movieDao.getMovies()
-            },
-            fetch = { getMoviesBySortOrderFromApi(sortType, page) },
-            saveFetchResult = { response ->
-                run {
-                    response.results?.let {
-                        insertMoviesToDB(it)
-                    }
-                }
-            }, shouldFetch = {
-                //should implement your caching strategy
-                it.isEmpty()
+    //Paging
+    @OptIn(ExperimentalPagingApi::class)
+    fun getPagingMovies(sort: SortOrder, search: String = DEFAULT_SEARCH_QUERY) =
+        Pager(
+            config,
+            remoteMediator = MovieRemoteMediator(
+                repository = this,
+                sort,
+                search.ifEmpty { DEFAULT_SEARCH_QUERY })
+        ) {
+            getPagedMoviesFromDB(sort, search)
+        }.flow
 
-            }
 
-        )
+    fun getSearchedMovies(search: String = DEFAULT_SEARCH_QUERY) =
+        Pager(
+            searchConfig
+        ) {
+            MoviePagingSource(this, search)
+        }.flow
 
+
+    suspend fun getMoviesByQueryFromApi(query: String, page: Int) =
+        apiClient.searchMovies(page, query)
+
+    suspend fun getMoviesBySortOrderFromApi(
+        sortBy: SortOrder,
+        page: Int
+    ): NetworkResult<PagedResponse<Movie>> = when (sortBy) {
+        SortOrder.POPULAR -> apiClient.getPopularMovies(page)
+        SortOrder.TOP_RATED -> apiClient.getTopRatedMovies(page)
+        SortOrder.UPCOMING -> apiClient.getUpcomingMovies(page)
+        SortOrder.TRENDING -> apiClient.getTrendingMovies(page)
+        SortOrder.NOW_PLAYING -> apiClient.getNowPlayingMovies(page)
+        SortOrder.BY_TITLE_ASC -> apiClient.getMoviesByTitleASC(page)
+        SortOrder.BY_TITLE_DESC -> apiClient.getMoviesByTitleDESC(page)
+        else -> {
+            throw IllegalArgumentException("Unknown sort order")
+        }
+    }
+
+
+    private fun getPagedMoviesFromDB(
+        sortType: SortOrder = SortOrder.POPULAR,
+        search: String
+    ): PagingSource<Int, Movie> =
+        movieDao.getPagedMovies(sortType, search.ifEmpty { DEFAULT_SEARCH_QUERY })
+
+
+    suspend fun getMovieRemoteKey(itemId: Int, query: String, sort: SortOrder): MovieRemoteKey? {
+        return movieRemoteKeyDao.getRemoteKey(itemId, query, sort)
+    }
 
     suspend fun insertAndDeleteMoviesAndRemoteKeysToDB(
         query: String,
@@ -200,14 +162,21 @@ class MovieRepository @Inject constructor(
     }
 
 
-    suspend fun getMovieRemoteKey(itemId: Int, query: String, sort: SortOrder): MovieRemoteKey? {
-        return movieRemoteKeyDao.getRemoteKey(itemId, query, sort)
-    }
+    //Details
+    fun getMovieDetailsById(id: Long): Flow<Resource<MovieDetails?>> =
+        networkBoundResource<MovieDetails?, MovieDetailsResponse>(
+            query = { movieDetailsDao.getMovieDetailsById(id) },
+            fetch = { apiClient.getMovieDetails(id) },
+            saveFetchResult = { movieDetailsDao.insertMovieDetails(it) },
+            shouldFetch = { details ->
+                val currentTime = Date().time
+                val lastUpdatedAt = details?.movie?.lastUpdatedAt?.time
+                lastUpdatedAt == null || currentTime - lastUpdatedAt > 1000 * 60 * 60 * 24
+            }
+        )
 
 
-    fun getExploreItems(): Flow<Map<ExploreInfo, List<Movie>>> = exploreDao.getExploreMap()
-
-
+    //Recent Search
     fun getRecentSearches() = recentDao.getRecentSearches()
 
     fun getRecentMovies() = recentDao.getRecentMovies()
@@ -217,11 +186,10 @@ class MovieRepository @Inject constructor(
     }
 
     suspend fun insertRecentSearch(query: String) = withContext(Dispatchers.IO) {
-        recentDao.insertRecentSearch(RecentSearch(query,-1, Date()))
+        recentDao.insertRecentSearch(RecentSearch(query, -1, Date()))
     }
 
     suspend fun insertRecentMovie(movie: Movie) = withContext(Dispatchers.IO) {
-        Timber.d("updateRecentMovie: $movie")
         recentDao.insertRecentMovie(movie)
     }
 }

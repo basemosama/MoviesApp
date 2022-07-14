@@ -2,8 +2,8 @@ package com.basemosama.movies.pagination
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.basemosama.movies.data.model.Movie
 import com.basemosama.movies.data.MovieRepository
+import com.basemosama.movies.data.model.Movie
 import com.basemosama.movies.network.utils.NetworkResult
 
 class MoviePagingSource(
@@ -27,7 +27,7 @@ class MoviePagingSource(
 
     }
 
-    override suspend fun load(params: LoadParams<Int>): PagingSource.LoadResult<Int, Movie> {
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Movie> {
         // Start refresh at page 1 if undefined.
         val nextPageNumber = params.key ?: 1
         val response = repository.getMoviesByQueryFromApi(query, nextPageNumber)
@@ -35,14 +35,14 @@ class MoviePagingSource(
             val movies = response.data.results ?: emptyList()
             val nextPage: Int? =
                 if (response.data.page < response.data.totalPages) response.data.page + 1 else null
-            PagingSource.LoadResult.Page(
+            LoadResult.Page(
                 data = movies,
                 prevKey = null, // Only paging forward.
                 nextKey = nextPage
             )
         } else {
             val error = (response as NetworkResult.Error).errorMessage
-            PagingSource.LoadResult.Error(Exception(error))
+            LoadResult.Error(Exception(error))
         }
 
     }
