@@ -6,7 +6,6 @@ import okio.Timeout
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import timber.log.Timber
 
 class NetworkResultCall<T : Any>(
     private val proxy: Call<T>
@@ -20,7 +19,6 @@ class NetworkResultCall<T : Any>(
             }
 
             override fun onFailure(call: Call<T>, t: Throwable) {
-                Timber.d("NetworkR $t")
                 val networkResult :NetworkResult<T> = NetworkResult.create(t)
                 callback.onResponse(this@NetworkResultCall, Response.success(networkResult))
             }

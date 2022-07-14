@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.basemosama.movies.data.Movie
+import com.basemosama.movies.data.model.Movie
 import com.basemosama.movies.databinding.ItemExploreMovieBackdropBinding
 import com.basemosama.movies.databinding.ItemExploreMovieBinding
 import com.basemosama.movies.databinding.ItemExploreMovieLargeBinding

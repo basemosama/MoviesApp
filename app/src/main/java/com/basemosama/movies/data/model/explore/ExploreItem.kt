@@ -1,6 +1,6 @@
 package com.basemosama.movies.data.model.explore
 
-import com.basemosama.movies.data.Movie
+import com.basemosama.movies.data.model.Movie
 
 data class ExploreItem (
 //    @Embedded

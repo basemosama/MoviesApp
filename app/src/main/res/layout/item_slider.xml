@@ -6,8 +6,8 @@
     <data>
         <variable
             name="movie"
-            type="com.basemosama.movies.data.Movie" />
-        <import type="com.basemosama.movies.data.ImageType"/>
+            type="com.basemosama.movies.data.model.Movie" />
+        <import type="com.basemosama.movies.data.model.utils.ImageType"/>
     </data>
 
 

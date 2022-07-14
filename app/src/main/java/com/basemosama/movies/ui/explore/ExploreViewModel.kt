@@ -1,5 +1,7 @@
 package com.basemosama.movies.ui.explore
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.basemosama.movies.data.MovieRepository
@@ -15,10 +17,13 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ExploreViewModel @Inject constructor(private val repository :MovieRepository) : ViewModel() {
+    private val _isLoading = MutableLiveData(true)
+    val isLoading:LiveData<Boolean> = _isLoading
 
     init {
 
         viewModelScope.launch {
+            _isLoading.value = true
             repository.handleExplore()
         }
 
@@ -28,6 +33,7 @@ class ExploreViewModel @Inject constructor(private val repository :MovieReposito
     val sliderItemsCount = MutableStateFlow(0)
 
 
+    // For Slider
     fun getTickerFlow(period: Long, initialDelay: Long = 0L) = flow {
         delay(initialDelay)
         var currentPage = 0
@@ -42,6 +48,7 @@ class ExploreViewModel @Inject constructor(private val repository :MovieReposito
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000),0)
 
 
-    var currentPage= 0
-
+    fun setIsLoading(value: Boolean) {
+        _isLoading.value = value
+    }
 }

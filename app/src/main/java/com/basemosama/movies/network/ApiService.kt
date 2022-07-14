@@ -1,9 +1,11 @@
 package com.basemosama.movies.network
 
-import com.basemosama.movies.data.Movie
+import com.basemosama.movies.data.model.Movie
+import com.basemosama.movies.data.model.details.MovieDetailsResponse
 import com.basemosama.movies.data.network.PagedResponse
 import com.basemosama.movies.network.utils.NetworkResult
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ApiService {
@@ -11,6 +13,12 @@ interface ApiService {
     companion object {
         const val BASE_URL: String = "https://api.themoviedb.org/3/"
     }
+
+
+    @GET("movie/{id}?language=en-US&append_to_response=videos,credits,similar,recommendations")
+    suspend fun getMovieDetails(
+        @Path("id") id: Long,
+    ): NetworkResult<MovieDetailsResponse>
 
 
 

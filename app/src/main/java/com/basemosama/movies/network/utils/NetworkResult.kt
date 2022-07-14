@@ -39,7 +39,6 @@ sealed class NetworkResult<T> {
             if(error is IOException){
                 errorMessage = "Please check your internet connection and try again "
             }
-            Timber.d("NetworkError : $errorMessage")
 
             return Error(errorMessage)
         }
@@ -48,17 +47,13 @@ sealed class NetworkResult<T> {
             return if (response.isSuccessful) {
                 val body = response.body()
                 if (body == null || response.code() == 204) {
-                    Timber.d("NetworkError : Empty String")
-
                     Error(  DEFAULT_ERROR)
                 } else {
-                    Timber.d("NetworkError : Success")
                     Success( body)
 
                 }
             } else {
                 val msg = if(!response.message().isNullOrEmpty()) response.message() else DEFAULT_ERROR
-                Timber.d("NetworkError response: $msg")
                 Error(msg)
             }
         }

@@ -2,7 +2,7 @@ package com.basemosama.movies.data.model.explore
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.basemosama.movies.data.model.SortOrder
+import com.basemosama.movies.data.model.utils.SortOrder
 
 @Entity(tableName = "explore")
 data class ExploreInfo(

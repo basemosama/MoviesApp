@@ -17,7 +17,7 @@
             />
         <argument
             android:name="sortOrder"
-            app:argType="com.basemosama.movies.data.model.SortOrder"
+            app:argType="com.basemosama.movies.data.model.utils.SortOrder"
             android:defaultValue="POPULAR" />
         <action
             android:id="@+id/action_moviesFragment_to_detailsFragment2"

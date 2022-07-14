@@ -7,8 +7,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.basemosama.movies.data.Movie
-import com.basemosama.movies.data.model.SortOrder
+import com.basemosama.movies.data.model.Movie
+import com.basemosama.movies.data.model.utils.SortOrder
 import com.basemosama.movies.data.model.explore.ExploreInfo
 import com.basemosama.movies.data.model.explore.ExploreItem
 import com.basemosama.movies.databinding.ItemExploreBinding

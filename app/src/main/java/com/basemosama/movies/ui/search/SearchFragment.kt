@@ -18,14 +18,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.basemosama.movies.R
 import com.basemosama.movies.adapters.*
-import com.basemosama.movies.data.Movie
+import com.basemosama.movies.data.model.Movie
 import com.basemosama.movies.data.model.search.RecentSearch
 import com.basemosama.movies.databinding.FragmentSearchBinding
 import com.basemosama.movies.utils.repeatOnLifeCycle
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.filter
-import timber.log.Timber
 
 @AndroidEntryPoint
 class SearchFragment : Fragment(), MovieClickListener, RecentSearchAdapter.ItemClickListener {
@@ -157,7 +156,6 @@ class SearchFragment : Fragment(), MovieClickListener, RecentSearchAdapter.ItemC
 
     private fun getRecent() {
         repeatOnLifeCycle(viewModel.recentMovies) {
-            Timber.d("recent movies: ${it.map { it.title }}")
             recentMoviesAdapter.submitList(it)
         }
         repeatOnLifeCycle(viewModel.recentSearches) {

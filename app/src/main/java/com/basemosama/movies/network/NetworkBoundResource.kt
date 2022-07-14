@@ -2,7 +2,9 @@ package com.basemosama.movies.network
 
 import com.basemosama.movies.network.utils.NetworkResult
 import com.basemosama.movies.utils.Resource
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.withContext
 
 // Helper class to cache the network response and deliver it to the UI
 inline fun <ResultType, RequestType> networkBoundResource(
@@ -20,7 +22,9 @@ inline fun <ResultType, RequestType> networkBoundResource(
 
             when (val networkResult = fetch()) {
                 is NetworkResult.Success -> {
+                    withContext(Dispatchers.IO){
                     saveFetchResult(networkResult.data)
+                    }
                     query().map { Resource.Success(it) }
                 }
                 is NetworkResult.Error-> {

@@ -20,4 +20,6 @@
     <string name="menu_item_movies">Movies</string>
     <string name="explore_title">Explore</string>
     <string name="search_title">Search</string>
+    <string name="artist_profile">Artist Profile Image</string>
+    <string name="read_more">Read more</string>
 </resources>

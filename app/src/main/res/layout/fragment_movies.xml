@@ -56,7 +56,7 @@
                 app:lottie_autoPlay="true"
                 app:lottie_loop="true"
                 app:lottie_rawRes="@raw/loading"
-                app:lottie_url="REPLACE_JSON_URL" />
+              />
 
         </RelativeLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
