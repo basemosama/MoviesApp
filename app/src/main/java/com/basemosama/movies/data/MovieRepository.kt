@@ -1,12 +1,13 @@
 package com.basemosama.movies.data
 
 import androidx.paging.*
-import com.basemosama.movies.data.model.SortOrder
+import com.basemosama.movies.data.model.Movie
 import com.basemosama.movies.data.model.details.MovieDetails
+import com.basemosama.movies.data.model.details.MovieDetailsResponse
 import com.basemosama.movies.data.model.explore.ExploreInfo
 import com.basemosama.movies.data.model.explore.ExploreMovieCrossRef
-import com.basemosama.movies.data.model.search.RecentMovie
 import com.basemosama.movies.data.model.search.RecentSearch
+import com.basemosama.movies.data.model.utils.SortOrder
 import com.basemosama.movies.data.network.PagedResponse
 import com.basemosama.movies.database.dao.ExploreDao
 import com.basemosama.movies.database.dao.MovieDao
@@ -25,6 +26,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -101,13 +103,13 @@ class MovieRepository @Inject constructor(
 
 
 
-    fun getMovieDetailsById(id:Long):Flow<Resource<MovieDetails>> = networkBoundResource(
+    fun getMovieDetailsById(id:Long):Flow<Resource<MovieDetails?>> = networkBoundResource<MovieDetails?,MovieDetailsResponse>(
         query = { movieDao.getMovieDetailsById(id) },
         fetch = { apiClient.getMovieDetails(id) },
         saveFetchResult = { movieDao.insertMovieDetails(it) },
         shouldFetch = {details ->
             val currentTime = Date().time
-            val lastUpdatedAt = details.movie.lastUpdatedAt?.time
+            val lastUpdatedAt = details?.movie?.lastUpdatedAt?.time
              lastUpdatedAt == null || currentTime - lastUpdatedAt > 1000 * 60 * 60 * 24
              }
     )
@@ -125,8 +127,7 @@ class MovieRepository @Inject constructor(
     private suspend fun shouldFetchExploreItems(): Boolean {
         val currentDay = Calendar.getInstance().get(Calendar.DAY_OF_YEAR)
         val lastDay = preferenceManger.getExploreLastUpdateDay()
-        val shouldFetch = currentDay != lastDay
-        return shouldFetch
+        return currentDay != lastDay
     }
 
 
@@ -216,10 +217,11 @@ class MovieRepository @Inject constructor(
     }
 
     suspend fun insertRecentSearch(query: String) = withContext(Dispatchers.IO) {
-        recentDao.insertRecentSearch(RecentSearch(query, Date()))
+        recentDao.insertRecentSearch(RecentSearch(query,-1, Date()))
     }
 
     suspend fun insertRecentMovie(movie: Movie) = withContext(Dispatchers.IO) {
-        recentDao.insertRecentMovie(RecentMovie(movie.id, movie, Date()))
+        Timber.d("updateRecentMovie: $movie")
+        recentDao.insertRecentMovie(movie)
     }
 }

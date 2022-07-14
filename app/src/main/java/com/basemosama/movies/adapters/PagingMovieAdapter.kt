@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.basemosama.movies.data.Movie
+import com.basemosama.movies.data.model.Movie
 import com.basemosama.movies.databinding.ItemMovieBinding
 
 class PagingMovieAdapter(private val movieClickListener: MovieClickListener)

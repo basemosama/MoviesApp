@@ -17,8 +17,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.basemosama.movies.R
 import com.basemosama.movies.adapters.MovieClickListener
 import com.basemosama.movies.adapters.PagingMovieAdapter
-import com.basemosama.movies.data.Movie
-import com.basemosama.movies.data.model.SortOrder
+import com.basemosama.movies.data.model.Movie
+import com.basemosama.movies.data.model.utils.SortOrder
 import com.basemosama.movies.databinding.FragmentMoviesBinding
 import com.basemosama.movies.utils.repeatOnLifeCycle
 import dagger.hilt.android.AndroidEntryPoint

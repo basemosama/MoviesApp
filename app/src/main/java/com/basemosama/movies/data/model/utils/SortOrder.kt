@@ -1,4 +1,4 @@
-package com.basemosama.movies.data.model
+package com.basemosama.movies.data.model.utils
 
 enum class SortOrder {
     POPULAR,
@@ -10,5 +10,4 @@ enum class SortOrder {
     BY_TITLE_DESC,
     SIMILAR,
     RECOMMENDED;
-
 }

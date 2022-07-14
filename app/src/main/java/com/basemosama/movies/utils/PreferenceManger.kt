@@ -2,7 +2,7 @@ package com.basemosama.movies.utils
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.*
-import com.basemosama.movies.data.model.SortOrder
+import com.basemosama.movies.data.model.utils.SortOrder
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.firstOrNull

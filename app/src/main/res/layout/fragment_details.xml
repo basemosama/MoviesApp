@@ -7,9 +7,9 @@
 
         <variable
             name="movie"
-            type="com.basemosama.movies.data.Movie" />
+            type="com.basemosama.movies.data.model.Movie" />
 
-        <import type="com.basemosama.movies.data.ImageType" />
+        <import type="com.basemosama.movies.data.model.utils.ImageType" />
 
     </data>
 
@@ -191,6 +191,8 @@
                     android:foregroundGravity="center"
                     android:checkable="false"
                     app:singleLine="true"
+
+
                     />
                 </HorizontalScrollView>
 

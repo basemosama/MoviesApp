@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.basemosama.movies.data.Movie
+import com.basemosama.movies.data.model.Movie
 import com.basemosama.movies.data.model.explore.ExploreInfo
 import com.basemosama.movies.data.model.explore.ExploreMovieCrossRef
 import kotlinx.coroutines.flow.Flow

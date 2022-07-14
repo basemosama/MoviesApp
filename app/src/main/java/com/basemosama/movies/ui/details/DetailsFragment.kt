@@ -1,5 +1,6 @@
 package com.basemosama.movies.ui.details
 
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,8 +17,9 @@ import com.basemosama.movies.adapters.CastAdapter
 import com.basemosama.movies.adapters.ExploreViewType
 import com.basemosama.movies.adapters.MovieAdapter
 import com.basemosama.movies.adapters.MovieClickListener
-import com.basemosama.movies.data.Movie
+import com.basemosama.movies.data.model.Movie
 import com.basemosama.movies.data.model.details.Artist
+import com.basemosama.movies.data.model.details.MovieDetails
 import com.basemosama.movies.databinding.FragmentDetailsBinding
 import com.basemosama.movies.utils.Resource
 import com.basemosama.movies.utils.repeatOnLifeCycle
@@ -78,31 +80,7 @@ class DetailsFragment : Fragment(), MovieClickListener, CastAdapter.ItemClickLis
 
             if (resource !is Resource.Loading) {
                 val details = resource.data
-                detailsBinding.detailsLayout.fullScroll(View.FOCUS_UP);
-                detailsBinding.detailsLayout.smoothScrollTo(0,0)
-                detailsBinding.appBar.setExpanded(true)
-                detailsBinding.movie = details?.movie
-                detailsBinding.toolbar.title = details?.movie?.title
-
-                val cast = details?.cast
-                castAdapter.submitList(cast)
-
-                val similarMovies = details?.similarMovies
-                similarAdapter.submitList(similarMovies)
-
-                val recommendedMovies = details?.recommendedMovies
-                recommendedAdapter.submitList(recommendedMovies)
-
-
-                val genres = details?.genres
-                genres?.forEach { genre ->
-                    if (!genre.name.isNullOrEmpty()) {
-                        val chip = Chip(context)
-                        chip.text = genre.name
-                        detailsBinding.genreChips.addView(chip)
-                    }
-
-                }
+                handleMovieDetails(details)
             }
             if (resource is Resource.Error) {
                 Toast.makeText(context, resource.message, Toast.LENGTH_SHORT).show()
@@ -110,6 +88,38 @@ class DetailsFragment : Fragment(), MovieClickListener, CastAdapter.ItemClickLis
         }
     }
 
+
+    private fun handleMovieDetails(details: MovieDetails?){
+        detailsBinding.detailsLayout.fullScroll(View.FOCUS_UP);
+        detailsBinding.detailsLayout.smoothScrollTo(0, 0)
+        detailsBinding.appBar.setExpanded(true)
+
+        detailsBinding.movie = details?.movie
+        detailsBinding.toolbar.title = details?.movie?.title
+
+        val cast = details?.cast
+        castAdapter.submitList(cast)
+
+        val similarMovies = details?.similarMovies
+        similarAdapter.submitList(similarMovies)
+
+        val recommendedMovies = details?.recommendedMovies
+        recommendedAdapter.submitList(recommendedMovies)
+
+
+        val genres = details?.genres
+        genres?.forEach { genre ->
+            if (!genre.name.isNullOrEmpty()) {
+                val chip = Chip(context)
+                chip.text = genre.name
+                chip.chipBackgroundColor = context?.getColor(R.color.colorGreyLight)
+                    ?.let { ColorStateList.valueOf(it) }
+                detailsBinding.genreChips.addView(chip)
+            }
+
+        }
+
+    }
 
     private fun setUpToolbar() {
         detailsBinding.toolbar.apply {

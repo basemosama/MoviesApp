@@ -2,10 +2,9 @@ package com.basemosama.movies.database.dao
 
 import androidx.paging.PagingSource
 import androidx.room.*
-import com.basemosama.movies.data.Genre
-import com.basemosama.movies.data.Movie
-import com.basemosama.movies.data.model.SortOrder
+import com.basemosama.movies.data.model.Movie
 import com.basemosama.movies.data.model.details.*
+import com.basemosama.movies.data.model.utils.SortOrder
 import kotlinx.coroutines.flow.Flow
 
 @Dao

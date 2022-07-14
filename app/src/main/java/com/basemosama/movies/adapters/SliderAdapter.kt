@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.basemosama.movies.data.Movie
+import com.basemosama.movies.data.model.Movie
 import com.basemosama.movies.databinding.ItemSliderBinding
 
 class SliderAdapter(var movies: List<Movie?>? = emptyList(), private val sliderItemClickListener: SliderItemClickListener) :

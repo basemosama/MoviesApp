@@ -6,7 +6,7 @@
         <variable
             name="artist"
             type="com.basemosama.movies.data.model.details.Artist" />
-        <import type="com.basemosama.movies.data.ImageType"/>
+        <import type="com.basemosama.movies.data.model.utils.ImageType"/>
     </data>
 <androidx.cardview.widget.CardView
     android:layout_width="100dp"

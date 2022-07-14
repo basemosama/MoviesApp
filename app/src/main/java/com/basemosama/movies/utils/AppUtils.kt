@@ -5,7 +5,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.basemosama.movies.data.model.SortOrder
+import com.basemosama.movies.data.model.utils.SortOrder
 import com.basemosama.movies.data.model.explore.ExploreInfo
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer

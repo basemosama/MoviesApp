@@ -2,7 +2,7 @@ package com.basemosama.movies.pagination
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.basemosama.movies.data.model.SortOrder
+import com.basemosama.movies.data.model.utils.SortOrder
 
 
 @Entity(tableName = "movie_remote_key_table")

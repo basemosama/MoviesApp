@@ -4,8 +4,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import com.basemosama.movies.R
-import com.basemosama.movies.data.ImageType
-import com.basemosama.movies.data.Movie
+import com.basemosama.movies.data.model.Movie
+import com.basemosama.movies.data.model.utils.ImageType
 import com.bumptech.glide.Glide
 import java.text.SimpleDateFormat
 import java.util.*

@@ -15,7 +15,7 @@ class DetailsViewModel @Inject constructor(val repository: MovieRepository) : Vi
     private val movieId = MutableStateFlow<Long?>(null)
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val currentMovie: StateFlow<Resource<MovieDetails>> = movieId
+    val currentMovie: StateFlow<Resource<MovieDetails?>> = movieId
         .flatMapLatest { id ->
             if (id != null) repository.getMovieDetailsById(id) else emptyFlow()
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), Resource.Loading())

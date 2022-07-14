@@ -3,8 +3,8 @@ package com.basemosama.movies.ui.search
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
-import com.basemosama.movies.data.Movie
 import com.basemosama.movies.data.MovieRepository
+import com.basemosama.movies.data.model.Movie
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
